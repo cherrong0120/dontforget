@@ -1,9 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=47612342-cb59-41ed-b895-75b80fa85bdf
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>念念不忘 - 场景1：开机</title>
+<title>念念不忘</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden; user-select: none; background: #000; }
@@ -787,7 +790,7 @@ body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden;
 <div class="error" id="zipError">密码错误，请重试</div>
 <input type="password" id="zipPassword" placeholder="请输入6位数字密码" onkeydown="if(event.key==='Enter')tryUnzip()">
 <div id="zipHint" style="display:none;color:#666;font-size:12px;margin-top:6px;text-align:left;padding-left:2px;">提示：念念不忘，终需有安</div>
-<div class="buttons"><button onclick="tryUnzip()">确定</button><button onclick="closeZipModal()">取消</button></div>
+<div class="buttons"><button onclick="closeZipModal()">取消</button><button onclick="tryUnzip()">确定</button></div>
 </div>
 <div class="window" id="zipContentWindow" style="left:15%;top:10%;width:70%;height:80%;z-index:100;">
 <div class="window-titlebar"><div class="window-title">礼物.zip - 已解压</div><div class="window-controls"><div class="window-btn" onclick="minimizeWindow('zipContentWindow')">—</div><div class="window-btn" onclick="maximizeWindow('zipContentWindow')">▢</div><div class="window-btn close" onclick="closeZipContent()">✕</div></div></div>
@@ -1106,6 +1109,12 @@ document.querySelectorAll('.window-titlebar').forEach(titlebar => { titlebar.add
 document.addEventListener('mousemove', (e) => { if (dragWindow) { dragWindow.style.left = (e.clientX - dragX) + 'px'; dragWindow.style.top = (e.clientY - dragY) + 'px'; } });
 document.addEventListener('mouseup', () => { dragWindow = null; });
 let narrationTimer = null;
+function playNarration(file) {
+  const audio = new Audio(file);
+  audio.volume = globalVolume * 0.9;
+  audio.play().catch(function(e) { console.log('旁白播放需要用户点击'); });
+  return audio;
+}
 function showNarration(text, duration) { if (!duration) duration = 5000; const el = document.getElementById('narration'); el.textContent = text; el.classList.add('show'); clearTimeout(narrationTimer); narrationTimer = setTimeout(() => { el.classList.remove('show'); }, duration); }
 document.getElementById('startBtn').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('startMenu').classList.toggle('open'); });
 let dragNote = null, noteX = 0, noteY = 0;
@@ -1154,27 +1163,328 @@ const fileSystem = {
         '治疗记录.docx': { type: 'txt', content: '心理治疗记录\n\n患者：许念\n主治医师：陈静\n诊所：陈静心理诊所\n\n━━━━━━━━━━━━━━━━━━━━\n\n第1次治疗\n日期：2015年8月5日\n时长：50分钟\n\n患者由姨妈陪同就诊。初次见面，患者表现得非常拘谨，全程低着头，很少主动说话。\n\n我先做了自我介绍，解释了心理咨询的基本设置和保密原则。患者只是点头，没有回应。\n\n我尝试询问患者最近的睡眠情况，患者沉默了很久才说："睡不着。"我问她睡不着的时候在想什么，她说："什么都没想，就是睁着眼睛到天亮。"\n\n我注意到患者在说"什么都没想"的时候，手指在微微发抖。我没有继续追问，而是先教了她一个简单的呼吸放松练习。患者跟着做了几次，情绪稍微平复了一些。\n\n本次治疗主要以建立关系为主。患者的防御心理很强，对创伤相关的词汇有明显的回避反应。下次治疗将继续以稳定化为目标，不急于触碰创伤内容。\n\n医生备注：患者的解离症状明显，失忆可能是一种自我保护机制。治疗需要非常缓慢，不能操之过急。\n\n━━━━━━━━━━━━━━━━━━━━\n\n第5次治疗\n日期：2015年9月2日\n时长：50分钟\n\n患者今天独自来诊，比第一次放松了一些。她主动提到最近睡眠有所改善，"可以睡四五个小时了"。\n\n我问她是怎么做到的，她说："开着灯睡，然后把电视调到没有信号的频道，听那个雪花声，就觉得没那么害怕了。"\n\n我肯定了她找到的应对方式。然后我小心翼翼地问她："你有没有梦到过什么？"患者沉默了一会儿，说："梦到下雨，还有门响。但是看不清楚，每次快要看清楚的时候就醒了。"\n\n我没有继续追问梦境的细节，而是和她讨论了"安全感"的话题。患者说："我觉得哪里都不安全。在姨妈家也不安全，总觉得门会被撬开。"\n\n我们一起讨论了可以增强安全感的小方法，比如在门后放一个抵门器，睡前检查门窗等。\n\n医生备注：患者开始出现创伤片段的闪回（雨夜、门响），这是记忆开始松动的迹象。但患者的回避仍然很强，需要继续稳定化，不能急于进行暴露。\n\n━━━━━━━━━━━━━━━━━━━━\n\n第12次治疗\n日期：2015年11月4日\n时长：50分钟\n\n患者今天情绪很低落。一进门就说："陈医生，我是不是有问题？"\n\n我问她发生了什么。她说，昨天整理东西的时候，翻到了一个旧手机，"手机壳是粉色的，上面贴了很多贴纸，但是我完全不记得这个手机是谁的"。她打开手机，发现里面有很多照片，"都是两个人的合影，但是其中一个我不认识"。\n\n患者说她当时"头很晕，然后就吐了"。她把手机锁进了抽屉，"不敢再看"。\n\n我陪着她坐了一会儿，让她慢慢平复情绪。然后我问她："你觉得那个不认识的人，可能是谁？"患者摇头："不知道，可能是以前的朋友吧。"\n\n我没有点破。患者的记忆开始出现裂缝，但她的防御机制仍然在努力维持"什么都没发生过"的信念。\n\n本次治疗以情绪稳定和安全感重建为主。我建议患者如果再次出现强烈的情绪反应，可以使用我们之前练习的"着陆技术"（5-4-3-2-1感官练习）。\n\n医生备注：旧手机的发现是一个重要的转折点。患者的解离防御开始出现裂缝。接下来需要非常小心地处理，既不能让患者完全回避，也不能让她被创伤淹没。建议下周增加一次治疗。\n\n━━━━━━━━━━━━━━━━━━━━\n\n第20次治疗\n日期：2016年3月15日\n时长：50分钟\n\n患者今天穿了一件深色的外套，看起来比之前瘦了一些。她一坐下就说："陈医生，我想搬家。"\n\n我问她为什么。她说，姨妈家附近在装修，"电钻的声音让我很烦躁，而且最近总是梦到那个声音"。我问她"那个声音"是什么声音，她沉默了一会儿说："撬门的声音。"\n\n这是患者第一次主动提到"撬门"。我没有表现出惊讶，而是平静地问她："你能多说说这个梦吗？"患者说："梦里总是下雨，然后有什么东西在撬门，我想喊但是喊不出来，然后就醒了。"\n\n我们讨论了这个梦的象征意义。患者说："我觉得那个门是我心里的门，有什么东西想进来，但是我不想让它进来。"\n\n我肯定了她的觉察。然后我问她："你觉得门后面是什么？"患者摇头："不知道，可能是我不想面对的东西吧。"\n\n本次治疗取得了重要进展。患者开始用隐喻的方式触碰创伤内容，这是暴露疗法的准备阶段。\n\n医生备注：患者的自我觉察能力很强。她用"门"的隐喻来描述自己的防御机制，这非常有洞察力。接下来可以逐步引入暴露疗法的概念，让患者在有准备的情况下面对创伤记忆。\n\n━━━━━━━━━━━━━━━━━━━━\n\n第35次治疗\n日期：2016年10月12日\n时长：50分钟\n\n患者今天带来了一个笔记本。她说："陈医生，我最近开始写日记了。"她把笔记本递给我，上面写了很多零散的句子。\n\n我翻了几页，看到这样一些内容：\n- "今天下雨了，我站在窗边看了很久。"\n- "我好像忘记了什么很重要的事情。"\n- "手机里那个人，笑起来很好看。"\n- "我不敢看照片里的眼睛。"\n- "陈医生说，面对比逃避好。但是我好害怕。"\n\n我看完后把笔记本还给她，说："你写得很好。写日记是一个很好的方式，可以帮助你整理自己的感受。"\n\n患者说："我有时候觉得，那个人是我很重要的人。但是我想不起来是谁。我试着去想，但是头会很痛。"\n\n我问她："如果那个人真的是你很重要的人，你觉得他/她会希望你怎么做？"患者沉默了很久，然后说："可能希望我好好活着吧。"\n\n本次治疗以患者的自我探索为主。患者的记忆正在缓慢恢复，但她仍然无法将"那个人"与具体的身份联系起来。\n\n医生备注：患者的日记是一个重要的治疗工具。她在写作中逐渐接近被压抑的记忆。建议继续鼓励她写日记，下次可以带更多内容来讨论。\n\n━━━━━━━━━━━━━━━━━━━━\n\n第50次治疗\n日期：2017年6月20日\n时长：60分钟\n\n今天是一个重要的日子。患者终于同意开始第一阶段的暴露疗法。\n\n我们讨论了暴露疗法的原理和步骤。患者说："我准备好了。我不能一辈子都这样躲着。"\n\n第一阶段的暴露目标是：回到原来的小区，但不进入原住所。患者的姨妈家在另一个区，她已经一年多没有回过原来的小区了。\n\n我们在咨询室里先做了想象暴露。我引导患者想象自己走进小区大门，走过花坛，来到6号楼楼下。患者在想象过程中出现了明显的焦虑反应（心跳加速、手心出汗），但她坚持完成了想象。\n\n然后我们讨论了实地暴露的计划。患者决定下周六上午去小区，在楼下站10分钟，然后离开。我会在治疗后通过电话跟进。\n\n患者离开前说："陈医生，我有点紧张，但是我觉得我可以做到。"\n\n医生备注：患者经过近两年的稳定化治疗，终于准备好面对创伤了。暴露疗法需要非常缓慢地进行，不能急于求成。第一阶段的目标只是回到小区，不进入住所。如果患者出现强烈的情绪反应，随时可以暂停。\n\n━━━━━━━━━━━━━━━━━━━━\n\n第58次治疗\n日期：2017年9月12日\n时长：50分钟\n\n患者今天面带微笑走进咨询室。她说："陈医生，我做到了。"\n\n上周六，患者回到了原来的小区。她在6号楼楼下站了15分钟，"比计划的多了5分钟"。她说："我以为我会很害怕，但是站在那里的时候，我反而觉得很平静。好像有什么东西在告诉我，回来是对的。"\n\n然后她做了一件让我意外的事情——她走到了原住所的门口。她说："我在门口站了一会儿，摸了摸门把手。门是锁着的，里面没有人。"\n\n我问她当时的感受。她说："有点难过，但是也有点安心。我觉得那个房子在等我回去。"\n\n本次治疗取得了重大进展。患者不仅完成了第一阶段的暴露（回到小区），还自发地接近了原住所的门口。这说明她的内在力量正在增强。\n\n我们讨论了第二阶段暴露的可能性：回到原住所居住。患者说："我想回去。那个房子是我生活过的地方，我不能一直躲着。"\n\n医生备注：患者的进步超出了预期。她已经准备好进入第二阶段的暴露疗法（回到原住所居住）。但需要提醒患者，进入住所后可能会出现更强烈的情绪反应和记忆闪回，需要做好心理准备。建议在搬回去之前，先在白天进入住所待几个小时，逐步适应。\n\n━━━━━━━━━━━━━━━━━━━━\n\n第65次治疗\n日期：2018年1月15日\n时长：50分钟\n\n患者已经搬回原住所居住两周了。\n\n她说："搬回去的第一天晚上，我失眠了。我把所有的灯都打开了，坐在客厅里到天亮。但是第二天晚上，我就可以睡几个小时了。"\n\n我问她住所里有没有什么变化。她说："我把另一个房间收拾了一下，但是没有扔东西。书架上的书还在，衣柜里的衣服还在。我觉得这样挺好的。"\n\n这是患者第一次平静地提到"另一个房间"，虽然仍然没有说出房间原来的主人是谁，但这是一个重要的进步。\n\n我问她有没有出现记忆闪回。她说："有一天晚上，我在厨房倒水，突然闻到了番茄炒蛋的味道。但是我没有做饭。然后我就想起了一些事情……"她停顿了一下，"以前有人很喜欢吃番茄炒蛋，每次我做都吃很多。"\n\n患者说完之后哭了。这是她在治疗中第一次因为"以前的事"而哭泣。我没有说话，只是安静地陪着她。\n\n哭了一会儿之后，患者说："陈医生，我好像开始想起来了。"\n\n医生备注：患者搬回原住所后，记忆开始大量恢复。番茄炒蛋的味道触发了关于过去的具体记忆。患者第一次因为过去的事情而哭泣，这是情感连接重建的重要标志。接下来需要继续支持患者，让她在安全的环境中逐步恢复更多记忆。\n\n━━━━━━━━━━━━━━━━━━━━\n\n第72次治疗\n日期：2018年4月23日\n时长：50分钟\n\n患者今天带来了一个好消息："陈医生，我想起来一些事情了。"\n\n她说，上周整理书架的时候，翻到了一本旧相册。"相册里有很多照片，都是两个人的合影。照片背面写着日期和名字。"\n\n患者说："我想起来了，那个人对我很重要。我们一起生活了很多年。"\n\n说出这些话的时候，患者的声音在发抖。她说了很多关于过去的事情，说了将近20分钟。然后她停下来，说："陈医生，那个人不在了。三年前就不在了。"\n\n然后患者开始大哭。这一次，她哭了很久。\n\n等她平复之后，我说："你很勇敢。你用了三年的时间，终于敢面对这件事了。"\n\n患者说："但是我还是想不起来那天晚上发生了什么。我只记得下班回家，然后……然后就是警察来了。中间的事情，我完全不记得。"\n\n我说："有些记忆可能需要更长的时间才能恢复。不要着急，我们慢慢来。"\n\n医生备注：患者终于恢复了关于"那个人"的身份记忆。这是治疗的重大里程碑。但患者对案发当晚的记忆仍然是空白的，这可能是最严重的创伤部分，需要更长时间才能处理。接下来进入第三阶段的暴露疗法：打开电脑，面对过去留下的所有数据。\n\n━━━━━━━━━━━━━━━━━━━━\n\n第78次治疗\n日期：2018年7月9日\n时长：60分钟\n\n今天我们讨论了第三阶段暴露疗法的具体计划。\n\n患者说："书房里还有一台电脑。我一直不敢打开。我知道里面有很多东西，但是我害怕看到。"\n\n我说："你准备好了吗？"患者说："我觉得我准备好了。陈医生，你说过，面对比逃避好。过去的那个人花了那么多心思在电脑里留了那些东西，我不能让那些心血白费。"\n\n我们一起制定了第三阶段的暴露计划：\n1. 第一周：打开电脑，熟悉桌面，不打开任何文件\n2. 第二周：浏览文件夹，了解电脑里有什么\n3. 第三周及以后：逐步打开文件，面对过去留下的内容\n\n我提醒患者："如果在过程中出现强烈的情绪反应或者记忆闪回，随时可以暂停。你可以随时来找我。"\n\n患者说："我知道。陈医生，谢谢你陪我走了这么远。"\n\n我说："是你自己很勇敢。我只是在旁边陪着你而已。"\n\n医生备注：患者即将进入治疗的最后阶段。第三阶段的暴露疗法可能会触发最强烈的情绪反应和记忆闪回，因为电脑里保存着过去留下的所有数据。需要密切关注患者的状态，建议在暴露期间增加治疗频率（每周2次）。如果患者出现自伤、自杀念头或者严重的解离发作，需要立即干预。\n\n━━━━━━━━━━━━━━━━━━━━\n\n治疗记录（续）\n下次预约：2018年7月23日\n主治医师：陈静\n\n（本记录为患者隐私，未经患者书面同意不得向第三方透露）' },
         '医嘱.txt': { type: 'txt', content: '暴露疗法第三阶段：\n1. 回到案发公寓居住\n2. 打开电脑，面对遗留数据\n3. 记录每次回忆的细节\n4. 不要回避，不要删除\n\n主治医师：陈医生\n2018年7月' },
       }},
-      '我们去过的地方': { type: 'folder', children: {
-        '海边.jpg': { type: 'photo', photoFile: '礼物_海边.jpg', desc: '2013年夏天，我们第一次去海边。你说你喜欢海，因为海很蓝，像你的眼睛。' },
-        '山顶日出.jpg': { type: 'photo', photoFile: '礼物_山顶日出.jpg', desc: '2014年元旦，我们爬了一整夜的山，就为了看日出。你冻得发抖，但还是笑得很开心。' },
-        '游乐园.jpg': { type: 'photo', photoFile: '礼物_游乐园.jpg', desc: '2014年你生日，我用攒了半年的零花钱带你去了游乐园。你坐过山车时尖叫的样子好搞笑。' },
-        '书店门口.jpg': { type: 'photo', photoFile: '礼物_书店门口.jpg', desc: '2015年春天，你开始在晨光书店上晚班。我每天都去接你下班，虽然你总说不用。' },
-        '樱花树下.jpg': { type: 'photo', photoFile: '礼物_樱花树下.jpg', desc: '2015年4月，学校门口的樱花开了。你说等我毕业了，我们一起去日本看樱花。' }
+      '我们去过的地方': { type: 'folder', locked: true, children: {
+        '海边.jpg': { type: 'photo', photoFile: 'gift_seaside.jpg', desc: '2013年夏天，我们第一次去海边。你说你喜欢海，因为海很蓝，像你的眼睛。' },
+        '山顶日出.jpg': { type: 'photo', photoFile: 'gift_mountain_sunrise.jpg', desc: '2014年元旦，我们爬了一整夜的山，就为了看日出。你冻得发抖，但还是笑得很开心。' },
+        '游乐园.jpg': { type: 'photo', photoFile: 'gift_amusement_park.jpg', desc: '2014年你生日，我用攒了半年的零花钱带你去了游乐园。你坐过山车时尖叫的样子好搞笑。' },
+        '书店门口.jpg': { type: 'photo', photoFile: 'gift_bookstore.jpg', desc: '2015年春天，你开始在晨光书店上晚班。我每天都去接你下班，虽然你总说不用。' },
+        '樱花树下.jpg': { type: 'photo', photoFile: 'gift_cherry_blossom.jpg', desc: '2015年4月，学校门口的樱花开了。你说等我毕业了，我们一起去日本看樱花。' }
       }},
-      '录音': { type: 'folder', children: {
-        '最后的留言.mp3': { type: 'audio', audioFile: '许安_最后的留言.mp3', desc: '念，如果你听到这个，说明我已经不在了。不要难过，要好好活下去……' }
+      '录音': { type: 'folder', locked: true, children: {
+        '最后的留言.mp3': { type: 'audio', audioFile: 'xuan_final_message.mp3', desc: '念，如果你听到这个，说明我已经不在了。不要难过，要好好活下去……' }
       }},
-      '证据': { type: 'folder', children: {
-        '跟踪照片1.jpg': { type: 'photo', photoFile: '礼物_跟踪照片1.jpg', desc: '2015.7.10 那个男人在书店对面的咖啡馆，一直盯着我。' },
-        '跟踪照片2.jpg': { type: 'photo', photoFile: '礼物_跟踪照片2.jpg', desc: '2015.7.12 他跟着我到了小区楼下，还拍了照。' }
+      '证据': { type: 'folder', locked: true, children: {
+        '跟踪照片1.jpg': { type: 'photo', photoFile: 'gift_stalking_1.jpg', desc: '2015.7.10 那个男人在书店对面的咖啡馆，一直盯着我。' },
+        '跟踪照片2.jpg': { type: 'photo', photoFile: 'gift_stalking_2.jpg', desc: '2015.7.12 他跟着我到了小区楼下，还拍了照。' }
       }},
       '给二周目的你': { type: 'folder', secondPlay: true, children: {
-        '我和姐姐.jpg': { type: 'photo', photoFile: '礼物_二周目手绘画.jpg', desc: '我画了好久好久的画，送给最爱的姐姐。我们要永远在一起。' }
+        '手绘画.jpg': { type: 'photo', photoFile: 'gift_second_play_drawing.jpg', desc: '我画了好久好久的画，送给最爱的姐姐。我们要永远在一起。' }
       }}
     }
   }
   }
 }
+};
+
+// ========== 文件管理器状态 ==========
+let explorerPath = ['此电脑'];
+let explorerHistory = [['此电脑']];
+let explorerHistoryIndex = 0;
+let explorerViewMode = 'large';
+let explorerSortAsc = true;
+let explorerShowHidden = false;
+let explorerSearchQuery = '';
+
+function openExplorer() {
+  const win = document.getElementById('explorerWindow');
+  win.classList.add('open');
+  bringToFront('explorerWindow');
+  explorerPath = ['此电脑'];
+  explorerHistory = [['此电脑']];
+  explorerHistoryIndex = 0;
+  explorerSearchQuery = '';
+  const si = document.getElementById('explorerSearchInput');
+  if (si) si.value = '';
+  renderExplorer();
+}
+
+function getFolderByPath(pathArr) {
+  let current = fileSystem;
+  for (const seg of pathArr) {
+    if (current[seg] && current[seg].children !== undefined) {
+      current = current[seg].children;
+    } else { return null; }
+  }
+  return current;
+}
+
+function renderExplorer() {
+  const contentEl = document.getElementById('explorerContent');
+  const statusEl = document.getElementById('explorerStatusbar');
+  const folder = getFolderByPath(explorerPath);
+  if (!folder) {
+    contentEl.innerHTML = '<div style="padding:20px;color:#999;font-size:13px;">无法访问</div>';
+    return;
+  }
+
+  let items = Object.entries(folder);
+
+  // 过滤
+  items = items.filter(function(entry) {
+    const name = entry[0], item = entry[1];
+    if (item.special === 'birthday' && !explorerSearchQuery) return false;
+    if (item.hidden && !explorerShowHidden && !explorerSearchQuery) return false;
+    if (item.secondPlay && !isSecondPlaythrough) return false;
+    return true;
+  });
+
+  if (explorerSearchQuery) {
+    const q = explorerSearchQuery.toLowerCase();
+    items = items.filter(function(entry) {
+      return entry[0].toLowerCase().indexOf(q) !== -1;
+    });
+  }
+
+  items.sort(function(a, b) {
+    const af = a[1].type === 'folder' || a[1].type === 'drive';
+    const bf = b[1].type === 'folder' || b[1].type === 'drive';
+    if (af && !bf) return -1;
+    if (!af && bf) return 1;
+    const cmp = a[0].localeCompare(b[0], 'zh');
+    return explorerSortAsc ? cmp : -cmp;
+  });
+
+  if (explorerViewMode === 'large') {
+    contentEl.style.flexDirection = 'row';
+    contentEl.style.flexWrap = 'wrap';
+    contentEl.innerHTML = items.map(function(entry) {
+      const name = entry[0], item = entry[1];
+      const safeName = name.replace(/'/g, "\\'");
+      return '<div class="explorer-item" ondblclick="openExplorerItem(\'' + safeName + '\')" onclick="selectExplorerItem(this)">'
+        + '<div class="icon">' + getItemIcon(name, item) + '</div>'
+        + '<div class="name">' + name + '</div></div>';
+    }).join('');
+  } else if (explorerViewMode === 'list') {
+    contentEl.style.flexDirection = 'column';
+    contentEl.style.flexWrap = 'nowrap';
+    contentEl.innerHTML = items.map(function(entry) {
+      const name = entry[0], item = entry[1];
+      const safeName = name.replace(/'/g, "\\'");
+      return '<div style="display:flex;align-items:center;gap:8px;padding:4px 8px;cursor:pointer;font-size:12px;" ondblclick="openExplorerItem(\'' + safeName + '\')">'
+        + '<div style="width:20px;height:20px;display:flex;align-items:center;justify-content:center;">' + getSmallIcon(item) + '</div>'
+        + '<div>' + name + '</div></div>';
+    }).join('');
+  } else {
+    contentEl.style.flexDirection = 'column';
+    contentEl.style.flexWrap = 'nowrap';
+    let h = '<div style="display:grid;grid-template-columns:1fr 120px 100px 80px;padding:6px 8px;font-size:11px;color:#666;border-bottom:1px solid #ddd;gap:8px;"><div>名称</div><div>修改日期</div><div>类型</div><div>大小</div></div>';
+    h += items.map(function(entry) {
+      const name = entry[0], item = entry[1];
+      const safeName = name.replace(/'/g, "\\'");
+      const tl = { folder: '文件夹', drive: '磁盘驱动器', photo: '图片文件', audio: '音频文件', txt: '文本文档', zip: '压缩文件' }[item.type] || item.type;
+      return '<div style="display:grid;grid-template-columns:1fr 120px 100px 80px;padding:4px 8px;font-size:12px;cursor:pointer;gap:8px;align-items:center;" ondblclick="openExplorerItem(\'' + safeName + '\')">'
+        + '<div style="display:flex;align-items:center;gap:8px;"><div style="width:18px;height:18px;">' + getSmallIcon(item) + '</div>' + name + '</div>'
+        + '<div style="color:#666;">' + (item.date || '2015/7/15') + '</div>'
+        + '<div style="color:#666;">' + tl + '</div>'
+        + '<div style="color:#666;">' + (item.size || '') + '</div></div>';
+    }).join('');
+    contentEl.innerHTML = h;
+  }
+
+  statusEl.textContent = items.length + ' 个项目';
+  updateAddressBar();
+  updateNavButtons();
+  updateSidebarActive();
+}
+
+function getItemIcon(name, item) {
+  if (item.type === 'drive') {
+    return '<svg viewBox="0 0 40 40" width="40" height="40"><rect x="4" y="8" width="32" height="24" rx="2" fill="#e8e8e8" stroke="#999"/><rect x="7" y="12" width="26" height="12" rx="1" fill="#4a90d9"/><circle cx="30" cy="28" r="2" fill="#4caf50"/></svg>';
+  }
+  if (item.type === 'folder') {
+    return '<svg viewBox="0 0 40 40" width="40" height="40"><path d="M4 10 Q4 8 6 8 L16 8 L20 12 L34 12 Q36 12 36 14 L36 30 Q36 32 34 32 L6 32 Q4 32 4 30 Z" fill="#ffc107" stroke="#f9a825"/></svg>';
+  }
+  if (item.type === 'photo') {
+    if (item.photoFile) {
+      return '<img src="' + item.photoFile + '" style="width:40px;height:40px;object-fit:cover;border-radius:2px;">';
+    }
+    return '<svg viewBox="0 0 40 40" width="40" height="40"><rect x="4" y="6" width="32" height="28" rx="2" fill="' + (item.color || '#e8e8e8') + '" stroke="#999"/><circle cx="14" cy="15" r="3" fill="#ffeb3b"/><path d="M6 30 L16 20 L24 26 L30 22 L34 28 L34 32 L6 32 Z" fill="rgba(255,255,255,0.5)"/></svg>';
+  }
+  if (item.type === 'audio') {
+    return '<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="20" r="16" fill="#9c27b0"/><circle cx="20" cy="20" r="6" fill="#fff"/><circle cx="20" cy="20" r="2" fill="#9c27b0"/></svg>';
+  }
+  if (item.type === 'txt') {
+    return '<svg viewBox="0 0 40 40" width="40" height="40"><path d="M10 4 L28 4 L34 10 L34 36 L10 36 Z" fill="#fff" stroke="#999"/><path d="M28 4 L28 10 L34 10" fill="none" stroke="#999"/><line x1="14" y1="16" x2="30" y2="16" stroke="#ccc"/><line x1="14" y1="21" x2="30" y2="21" stroke="#ccc"/><line x1="14" y1="26" x2="26" y2="26" stroke="#ccc"/></svg>';
+  }
+  if (item.type === 'zip') {
+    return '<svg viewBox="0 0 40 40" width="40" height="40"><rect x="8" y="4" width="24" height="32" rx="2" fill="#ff9800" stroke="#f57c00"/><rect x="16" y="4" width="8" height="6" fill="#fff"/><rect x="18" y="12" width="4" height="2" fill="#fff"/><rect x="18" y="16" width="4" height="2" fill="#fff"/><rect x="18" y="20" width="4" height="2" fill="#fff"/></svg>';
+  }
+  return '<div style="width:40px;height:40px;background:#ddd;border-radius:2px;"></div>';
+}
+
+function getSmallIcon(item) {
+  const colors = { folder: '#ffc107', drive: '#4a90d9', photo: '#4caf50', audio: '#9c27b0', txt: '#607d8b', zip: '#ff9800' };
+  return '<div style="width:16px;height:16px;border-radius:2px;background:' + (colors[item.type] || '#999') + ';"></div>';
+}
+
+function selectExplorerItem(el) {
+  document.querySelectorAll('.explorer-item').forEach(function(i) { i.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
+function openExplorerItem(name) {
+  const folder = getFolderByPath(explorerPath);
+  if (!folder || !folder[name]) return;
+  const item = folder[name];
+  if (item.type === 'folder' || item.type === 'drive') {
+    if (item.locked) {
+      showNarration('（你没有权限访问此文件夹）', 3000);
+      return;
+    }
+    navigateTo(explorerPath.concat(name).join('/'));
+  } else if (item.type === 'zip') {
+    openZipModal();
+  } else if (item.type === 'audio') {
+    openAudioPlayer(name);
+  } else if (item.type === 'photo') {
+    if (item.special === 'birthday') {
+      openPhotoViewer(name, item);
+    } else {
+      showNarration('（图片预览：' + name + '）', 2000);
+    }
+  } else if (item.type === 'txt') {
+    openTxtFile(name, item.content);
+  }
+}
+
+function navigateTo(pathStr) {
+  if (pathStr === 'network') { showNarration('（网络位置不可用）', 2000); return; }
+  const pathArr = pathStr.split('/');
+  if (!getFolderByPath(pathArr)) { showNarration('（路径不存在）', 2000); return; }
+  explorerPath = pathArr;
+  explorerHistory = explorerHistory.slice(0, explorerHistoryIndex + 1);
+  explorerHistory.push(pathArr);
+  explorerHistoryIndex = explorerHistory.length - 1;
+  explorerSearchQuery = '';
+  const si = document.getElementById('explorerSearchInput');
+  if (si) si.value = '';
+  renderExplorer();
+}
+
+function explorerBack() {
+  if (explorerHistoryIndex > 0) { explorerHistoryIndex--; explorerPath = explorerHistory[explorerHistoryIndex]; renderExplorer(); }
+}
+function explorerForward() {
+  if (explorerHistoryIndex < explorerHistory.length - 1) { explorerHistoryIndex++; explorerPath = explorerHistory[explorerHistoryIndex]; renderExplorer(); }
+}
+function explorerUp() {
+  if (explorerPath.length > 1) { navigateTo(explorerPath.slice(0, -1).join('/')); }
+}
+function updateNavButtons() {
+  const b = document.getElementById('explorerBack');
+  const f = document.getElementById('explorerForward');
+  if (b) b.classList.toggle('disabled', explorerHistoryIndex === 0);
+  if (f) f.classList.toggle('disabled', explorerHistoryIndex === explorerHistory.length - 1);
+}
+function updateAddressBar() {
+  const addr = document.getElementById('explorerAddress');
+  if (addr) {
+    addr.innerHTML = explorerPath.map(function(seg, i) {
+      return '<span class="breadcrumb" onclick="navigateTo(\'' + explorerPath.slice(0, i + 1).join('/') + '\')">' + seg + '</span>';
+    }).join('<span class="sep">›</span>');
+  }
+}
+function addressBarToInput() {
+  const addr = document.getElementById('explorerAddress');
+  if (!addr) return;
+  const cur = explorerPath.join('\\');
+  addr.innerHTML = '<input type="text" id="addressBarInput" value="' + cur + '" style="flex:1;border:none;outline:none;font-size:12px;" onkeydown="if(event.key===\'Enter\'){submitAddressBar();}else if(event.key===\'Escape\'){renderExplorer();}">';
+  const inp = document.getElementById('addressBarInput');
+  if (inp) { inp.focus(); inp.select(); }
+}
+function submitAddressBar() {
+  const inp = document.getElementById('addressBarInput');
+  if (!inp) return;
+  let val = inp.value.trim().replace(/\\/g, '/');
+  let pathStr = '此电脑/' + val;
+  if (getFolderByPath(pathStr.split('/'))) { navigateTo(pathStr); }
+  else { showNarration('（路径不存在）', 2000); renderExplorer(); }
+}
+function searchFiles(query) { explorerSearchQuery = query.trim(); renderExplorer(); }
+function setViewMode(mode) {
+  explorerViewMode = mode;
+  document.querySelectorAll('.explorer-view-btn').forEach(function(b) { b.classList.remove('active'); });
+  renderExplorer();
+}
+function toggleSort() { explorerSortAsc = !explorerSortAsc; renderExplorer(); }
+function toggleHiddenFiles() {
+  explorerShowHidden = document.getElementById('showHiddenToggle').checked;
+  renderExplorer();
+}
+function updateSidebarActive() {
+  const cur = explorerPath.join('/');
+  document.querySelectorAll('.explorer-sidebar-item').forEach(function(item) {
+    item.classList.toggle('active', item.dataset.path === cur);
+  });
+}
+
+// ========== ZIP密码 ==========
+function openZipModal() {
+  document.getElementById('zipModal').classList.add('open');
+  document.getElementById('zipPassword').value = '';
+  document.getElementById('zipError').style.display = 'none';
+  const hint = document.getElementById('zipHint');
+  if (hint) hint.style.display = chatRestored ? 'block' : 'none';
+  setTimeout(function() { document.getElementById('zipPassword').focus(); }, 100);
+}
+function closeZipModal() { document.getElementById('zipModal').classList.remove('open'); }
+function tryUnzip() {
+  const pw = document.getElementById('zipPassword').value.trim();
+  if (pw === '615816') {
+    closeZipModal();
+    zipExtracted = true;
+    // 解锁D盘礼物文件夹
+    const dDrive = fileSystem['此电脑'].children['D:'].children;
+    ['我们去过的地方', '录音', '证据'].forEach(function(n) {
+      if (dDrive[n]) delete dDrive[n].locked;
+    });
+    zipCurrentPath = ['root'];
+    renderZipFolder();
+    document.getElementById('zipContentWindow').classList.add('open');
+    bringToFront('zipContentWindow');
+  } else {
+    document.getElementById('zipError').style.display = 'block';
+    document.getElementById('zipPassword').value = '';
+    document.getElementById('zipPassword').focus();
+  }
+}
+
+
+
+const zipContent = {
+  root: { children: {
+    '给念的信': { type: 'folder', children: {
+      '出事前一周.txt': { type: 'txt', content: '念：\n\n今天下班的时候，我又看到那个人了。\n他站在小区对面的公交站，戴着帽子，我假装没看见，走得很快。\n\n你别担心，我跟书店王经理说了，以后晚班他会送我到路口。\n警察那边我也再去问了，他们说会加强巡逻。\n\n你最近总是睡不好，我昨晚起来看见你房间灯还亮着。\n别想太多，有我在呢。\n\n对了，下周你生日，我有准备哦。\n\n——安\n2015.7.8' },
+      '出事前一天.txt': { type: 'txt', content: '念：\n\n那个人今天又在楼下了。\n我从书店窗户看见的，他在花坛那边站了很久。\n\n我已经把这件事写下来了，也拍了照片，都放在一个地方。\n如果真的出了什么事，这些都是证据。\n\n你不要觉得是自己的问题，知道吗？\n你每天都那么辛苦地上班，还给我做饭，是我没有早点告诉你。\n\n念，不管发生什么，你都要好好的。\n\n——安\n2015.7.14' }
+    }},
+    '我们去过的地方': { type: 'folder', children: {
+      '海边.jpg': { type: 'photo', photoFile: 'gift_seaside.jpg', desc: '2012年夏天，我们第一次看海。你说海水好咸，我笑了好久。' },
+      '山顶日出.jpg': { type: 'photo', photoFile: 'gift_mountain_sunrise.jpg', desc: '2013年国庆，爬了三小时山，就为这十分钟日出。' },
+      '游乐园.jpg': { type: 'photo', photoFile: 'gift_amusement_park.jpg', desc: '2014年儿童节，明明不是儿童了，你还是带我去了。' },
+      '书店门口.jpg': { type: 'photo', photoFile: 'gift_bookstore.jpg', desc: '你工作的晨光书店，我每天放学都去等你下班。' },
+      '樱花树下.jpg': { type: 'photo', photoFile: 'gift_cherry_blossom.jpg', desc: '今年春天樱花开了，我们拍了好多照片。' }
+    }},
+    '录音': { type: 'folder', children: {
+      '最后的留言.mp3': { type: 'audio', audioFile: 'xuan_final_message.mp3', desc: '安留给念的最后一段话。' }
+    }},
+    '证据': { type: 'folder', children: {
+      '跟踪照片1.jpg': { type: 'photo', photoFile: 'gift_stalking_1.jpg', desc: '2015年7月，安拍下的跟踪者照片。' },
+      '跟踪照片2.jpg': { type: 'photo', photoFile: 'gift_stalking_2.jpg', desc: '同一个人，连续多天出现在小区附近。' }
+    }},
+    '给二周目的你': { type: 'folder', secondPlay: true, children: {
+      '手绘画.jpg': { type: 'photo', photoFile: 'gift_second_play_drawing.jpg', desc: '安亲手画的——我们的小公寓，和我们两个人。' }
+    }}
+  }}
 };
 
 let zipCurrentPath = ['root'];
@@ -1184,6 +1494,7 @@ const viewedZipItems = {};
 const totalZipItems = isSecondPlaythrough ? 11 : 10; // 二周目多1张手绘画
 let gameEnded = false;
 let zipExtracted = false;
+let chatRestored = false;
 
 function markZipItemViewed(name) {
   viewedZipItems[name] = true;
@@ -1295,7 +1606,7 @@ function playZipAudio(name, audioFile, desc) {
   // 播放最后的留言时，同时播放BGM（音量20%）
   if (name === '最后的留言.mp3') {
     const bgm = document.getElementById('zipBgmAudio');
-    bgm.src = 'bgm_最后的留言.mp3';
+    bgm.src = 'bgm_final_message.mp3';
     bgm.volume = globalVolume * 0.2;
     bgm.loop = true;
     bgm.play().catch(() => {});
@@ -3262,9 +3573,10 @@ function sendWechatMessage() {
       ];
       replies.forEach(function(msg, index) {
         setTimeout(function() {
-          contact.messages.push({ type: 'text', side: 'left', content: msg });
+          const msgObj = { type: 'text', side: 'left', content: msg };
+          contact.messages.push(msgObj);
           contact.lastMsg = msg;
-          renderWechatMessages(contact);
+          appendWechatMessage(contact, msgObj);
           renderWechatChatList();
         }, (index + 1) * 800);
       });
@@ -3272,75 +3584,6 @@ function sendWechatMessage() {
   }
 }
 
-function restoreChatMessages() {
-  const contact = wechatContacts.find(c => c.id === activeWechatChat);
-  if (!contact || contact.id !== 'unknown') return;
-
-  if (contact.messagesRestored) return;
-
-  // 前置条件：必须先打开过602论坛
-  if (!forum602Viewed) {
-    showWechatConfirm('恢复失败', '云端数据暂不可用，请稍后再试。', null);
-    return;
-  }
-
-  // 确认恢复（微信风格对话框）
-  showWechatConfirm('云端恢复', '聊天记录已过期，是否从云端恢复？', function() {
-    contact.messagesRestored = true;
-    chatUnlocked = true;
-    // 清空当前消息
-    contact.messages = [];
-    const msgContainer = document.getElementById('wechatMessages');
-    if (msgContainer) msgContainer.innerHTML = '';
-    // 移除"查看更多聊天记录"按钮
-    const loadMore = document.querySelector('.wechat-load-more');
-    if (loadMore) loadMore.remove();
-
-    // 逐条append消息，不重新渲染整个区域
-    contact.pendingMessages.forEach(function(msg, index) {
-      setTimeout(function() {
-        contact.messages.push(msg);
-        appendWechatMessage(contact, msg);
-      }, (index + 1) * 300);
-    });
-  });
-}
-
-function appendWechatMessage(contact, msg) {
-  const msgContainer = document.getElementById('wechatMessages');
-  if (!msgContainer) return;
-  let html = '';
-  if (msg.type === 'time') {
-    html = '<div class="wechat-msg-time">' + msg.content + '</div>';
-  } else if (msg.type === 'system') {
-    html = '<div class="wechat-msg-system">' + msg.content + '</div>';
-  } else if (msg.type === 'text') {
-    const leftAvatar = contact.avatarImg ? '<img src="' + contact.avatarImg + '">' : contact.avatar;
-    const rightAvatar = '<img src="avatar_xunian.png">';
-    const avatar = msg.side === 'left' ? leftAvatar : rightAvatar;
-    const color = msg.side === 'left' ? contact.avatarColor : '#f0f0f0';
-    html = '<div class="wechat-msg ' + msg.side + '">'
-      + '<div class="wechat-msg-avatar" style="background:' + color + '">' + avatar + '</div>'
-      + '<div class="wechat-msg-bubble">' + msg.content + '</div>'
-      + '</div>';
-  }
-  msgContainer.insertAdjacentHTML('beforeend', html);
-  // 滚动到底部
-  msgContainer.scrollTop = msgContainer.scrollHeight;
-}
-
-function searchChatMessages() {
-  const keyword = prompt('搜索聊天记录：');
-  if (!keyword) return;
-  const contact = wechatContacts.find(c => c.id === activeWechatChat);
-  if (!contact) return;
-  const matches = contact.messages.filter(m => m.type === 'text' && m.content.includes(keyword));
-  if (matches.length > 0) {
-    alert('找到 ' + matches.length + ' 条相关消息：\n\n' + matches.map(m => (m.side === 'left' ? contact.name : '我') + '：' + m.content).join('\n'));
-  } else {
-    alert('未找到相关消息');
-  }
-}
 
 
 
@@ -3353,7 +3596,6 @@ const monitorDates = [
   { date: '2018-07-12', label: '7月12日', locked: false, isLive: false, empty: true },
   { date: '2018-07-11', label: '7月11日', locked: false, isLive: false, empty: true },
   { date: '2018-07-10', label: '7月10日', locked: false, isLive: false, empty: true },
-  { date: '2015-07-16', label: '2015年7月16日', locked: true },
   { date: '2015-07-15', label: '2015年7月15日', locked: true },
 ];
 
@@ -3834,6 +4076,7 @@ function restoreChatMessages() {
   showWechatConfirm('云端恢复', '聊天记录已过期，是否从云端恢复？', function() {
     contact.messagesRestored = true;
     chatUnlocked = true;
+    chatRestored = true;
     // 清空当前消息
     contact.messages = [];
     const msgContainer = document.getElementById('wechatMessages');

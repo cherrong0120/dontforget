@@ -45,10 +45,8 @@
 │   ├── avatar_mom.png            # 王阿姨头像
 │   ├── avatar_doctor.png         # 陈医生头像
 │   ├── avatar_bookstore.png      # 书店群头像
-│   ├── avatar_filehelper.png     # 文件传输助手头像
 │   ├── icon_wechat.png           # 微信桌面图标
-│   ├── icon_monitor.png          # 监控桌面图标
-│   └── 礼物_*.jpg                # 礼物.zip中的8张照片
+│   ├── gift_*.jpg                # 礼物照片（5张地点+2张跟踪+1张二周目手绘画）
 │
 ├── 🔊 音频资源
 │   ├── narration_01.mp3          # 开场旁白
@@ -56,8 +54,9 @@
 │   ├── narration_monitor.mp3     # 监控旁白
 │   ├── narration_birthday.mp3    # 生日照片旁白
 │   ├── narration_xuan.mp3        # 新闻旁白
-│   ├── 许安_最后的留言.mp3        # 妹妹最后语音留言
-│   └── bgm_最后的留言.mp3         # 背景音乐
+│   ├── narration_chapter1_end.mp3 # 章节旁白
+│   ├── xuan_final_message.mp3    # 妹妹最后语音留言
+│   └── bgm_final_message.mp3     # 背景音乐
 │
 └── 🎬 视频资源
     ├── monitor_living_room_yesterday.mp4    # 客厅监控
