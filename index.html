@@ -1632,7 +1632,8 @@ function playZipAudio(name, audioFile, desc) {
   document.getElementById('zipAudioTitle').textContent = name;
   document.getElementById('zipAudioDesc').textContent = desc;
   audio.src = audioFile;
-  audio.volume = globalVolume;
+  // 最后的留言初始音量100%，其他音频用全局音量
+  audio.volume = (name === '最后的留言.mp3') ? 1.0 : globalVolume;
   player.classList.add('open');
   bringToFront('zipAudioPlayer');
   audio.play().catch(() => {});
@@ -1684,6 +1685,7 @@ function prevZipPhoto() {
   document.getElementById('zipPhotoTitle').textContent = p.name;
   document.getElementById('zipPhotoDesc').textContent = p.desc;
   document.getElementById('zipPhotoImg').src = p.photoFile;
+  markZipItemViewed(p.name);
 }
 
 function nextZipPhoto() {
@@ -1693,6 +1695,7 @@ function nextZipPhoto() {
   document.getElementById('zipPhotoTitle').textContent = p.name;
   document.getElementById('zipPhotoDesc').textContent = p.desc;
   document.getElementById('zipPhotoImg').src = p.photoFile;
+  markZipItemViewed(p.name);
 }
 
 function closeZipPhoto() {
