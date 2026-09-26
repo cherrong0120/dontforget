@@ -1236,7 +1236,7 @@ function renderExplorer() {
         if (nameMatch || birthdayMatch) {
           // 跳过非搜索时隐藏的项目，但生日特殊文件在搜索时显示
           if (item.special === 'birthday' || (!item.hidden && !item.secondPlay) || (item.hidden && explorerShowHidden)) {
-            results.push([name, item]);
+            results.push([name, item, fullPath]);
           }
         }
         // 递归搜索子文件夹和磁盘（包括locked文件夹，因为生日.jpg在locked的照片文件夹里）
@@ -1246,7 +1246,7 @@ function renderExplorer() {
       }
       return results;
     };
-    items = recursiveSearch(folder, '');
+    items = recursiveSearch(folder, explorerPath.join('/'));
   }
 
   items.sort(function(a, b) {
@@ -1263,8 +1263,9 @@ function renderExplorer() {
     contentEl.style.flexWrap = 'wrap';
     contentEl.innerHTML = items.map(function(entry) {
       const name = entry[0], item = entry[1];
-      const safeName = name.replace(/'/g, "\\'");
-      return '<div class="explorer-item" ondblclick="openExplorerItem(\'' + safeName + '\')" onclick="selectExplorerItem(this)">'
+      const itemPath = entry[2] || name;
+      const safePath = itemPath.replace(/'/g, "\\'");
+      return '<div class="explorer-item" ondblclick="openExplorerItem(\'' + safePath + '\')" onclick="selectExplorerItem(this)">'
         + '<div class="icon">' + getItemIcon(name, item) + '</div>'
         + '<div class="name">' + name + '</div></div>';
     }).join('');
@@ -1273,8 +1274,9 @@ function renderExplorer() {
     contentEl.style.flexWrap = 'nowrap';
     contentEl.innerHTML = items.map(function(entry) {
       const name = entry[0], item = entry[1];
-      const safeName = name.replace(/'/g, "\\'");
-      return '<div style="display:flex;align-items:center;gap:8px;padding:4px 8px;cursor:pointer;font-size:12px;" ondblclick="openExplorerItem(\'' + safeName + '\')">'
+      const itemPath = entry[2] || name;
+      const safePath = itemPath.replace(/'/g, "\\'");
+      return '<div style="display:flex;align-items:center;gap:8px;padding:4px 8px;cursor:pointer;font-size:12px;" ondblclick="openExplorerItem(\'' + safePath + '\')">'
         + '<div style="width:20px;height:20px;display:flex;align-items:center;justify-content:center;">' + getSmallIcon(item) + '</div>'
         + '<div>' + name + '</div></div>';
     }).join('');
@@ -1284,9 +1286,10 @@ function renderExplorer() {
     let h = '<div style="display:grid;grid-template-columns:1fr 120px 100px 80px;padding:6px 8px;font-size:11px;color:#666;border-bottom:1px solid #ddd;gap:8px;"><div>名称</div><div>修改日期</div><div>类型</div><div>大小</div></div>';
     h += items.map(function(entry) {
       const name = entry[0], item = entry[1];
-      const safeName = name.replace(/'/g, "\\'");
+      const itemPath = entry[2] || name;
+      const safePath = itemPath.replace(/'/g, "\\'");
       const tl = { folder: '文件夹', drive: '磁盘驱动器', photo: '图片文件', audio: '音频文件', txt: '文本文档', zip: '压缩文件' }[item.type] || item.type;
-      return '<div style="display:grid;grid-template-columns:1fr 120px 100px 80px;padding:4px 8px;font-size:12px;cursor:pointer;gap:8px;align-items:center;" ondblclick="openExplorerItem(\'' + safeName + '\')">'
+      return '<div style="display:grid;grid-template-columns:1fr 120px 100px 80px;padding:4px 8px;font-size:12px;cursor:pointer;gap:8px;align-items:center;" ondblclick="openExplorerItem(\'' + safePath + '\')">'
         + '<div style="display:flex;align-items:center;gap:8px;"><div style="width:18px;height:18px;">' + getSmallIcon(item) + '</div>' + name + '</div>'
         + '<div style="color:#666;">' + (item.date || '2015/7/15') + '</div>'
         + '<div style="color:#666;">' + tl + '</div>'
@@ -1336,27 +1339,38 @@ function selectExplorerItem(el) {
   el.classList.add('selected');
 }
 
-function openExplorerItem(name) {
-  const folder = getFolderByPath(explorerPath);
-  if (!folder || !folder[name]) return;
-  const item = folder[name];
+function openExplorerItem(nameOrPath) {
+  // 搜索结果可能传入完整路径（如 D:/照片/生日.jpg）
+  let item, itemName, parentFolder;
+  if (nameOrPath.indexOf('/') !== -1) {
+    const parts = nameOrPath.split('/');
+    itemName = parts.pop();
+    parentFolder = getFolderByPath(parts);
+    if (!parentFolder || !parentFolder[itemName]) return;
+    item = parentFolder[itemName];
+  } else {
+    const folder = getFolderByPath(explorerPath);
+    if (!folder || !folder[nameOrPath]) return;
+    item = folder[nameOrPath];
+    itemName = nameOrPath;
+  }
   if (item.type === 'folder' || item.type === 'drive') {
     if (item.locked) {
       return;
     }
-    navigateTo(explorerPath.concat(name).join('/'));
+    navigateTo(explorerPath.concat(itemName).join('/'));
   } else if (item.type === 'zip') {
     openZipModal();
   } else if (item.type === 'audio') {
-    openAudioPlayer(name);
+    openAudioPlayer(itemName);
   } else if (item.type === 'photo') {
     if (item.special === 'birthday') {
-      openPhotoViewer(name, item);
+      openPhotoViewer(itemName, item);
     } else {
-      showNarration('（图片预览：' + name + '）', 2000);
+      showNarration('（图片预览：' + itemName + '）', 2000);
     }
   } else if (item.type === 'txt') {
-    openTxtFile(name, item.content);
+    openTxtFile(itemName, item.content);
   }
 }
 
