@@ -516,8 +516,8 @@ body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden;
 .photo-viewer-title { font-size: 13px; color: #333; }
 .photo-viewer-close { cursor: pointer; font-size: 18px; color: #666; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
 .photo-viewer-close:hover { background: #e0e0e0; }
-.photo-viewer-body { padding: 20px; background: #2b2b2b; min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-.photo-viewer-image { width: 100%; max-width: 500px; aspect-ratio: 4/3; background: #1a1a1a; border: 4px solid #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
+.photo-viewer-body { padding: 20px; background: #2b2b2b; min-height: 300px; max-height: 70vh; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: auto; }
+.photo-viewer-image { width: 100%; max-width: 450px; max-height: 65vh; background: #1a1a1a; border: 4px solid #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.5); position: relative; overflow: auto; display: flex; align-items: flex-start; justify-content: center; }
 .photo-viewer-image .photo-scene { width: 100%; height: 100%; background: linear-gradient(180deg, #87CEEB 0%, #87CEEB 40%, #DEB887 40%, #DEB887 100%); position: relative; }
 .photo-viewer-image .photo-store { position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; background: #8B4513; }
 .photo-viewer-image .photo-store-sign { position: absolute; top: 10%; left: 50%; transform: translateX(-50%); background: #fff; padding: 8px 24px; font-size: 14px; color: #333; border: 2px solid #333; }
@@ -779,7 +779,7 @@ body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden;
   </div>
   <div class="photo-viewer-body">
     <div class="photo-viewer-image" id="photoViewerFront" style="background:#000;display:flex;align-items:center;justify-content:center;">
-      <img src="birthday.jpg" style="max-width:100%;max-height:100%;object-fit:contain;" alt="生日照片">
+      <img src="birthday.jpg" style="max-width:100%;height:auto;display:block;" alt="生日照片">
     </div>
     <div class="photo-viewer-back" id="photoViewerBack">
       <div class="back-text">
@@ -1178,8 +1178,7 @@ const fileSystem = {
         '未知.txt': { type: 'txt', content: 'B H I D R A T Y' }
       }},
       '重要': { type: 'folder', hidden: true, children: {
-        '诊断报告.pdf': { type: 'txt', content: '心理诊断报告\n\n患者姓名：许念\n性别：女\n年龄：21岁\n职业：晨光书店店员\n就诊日期：2015年8月3日\n报告日期：2015年8月10日\n主治医师：陈静\n\n━━━━━━━━━━━━━━━━━━━━\n\n一、主诉\n患者由其姨妈陪同就诊。主诉为"记性不好，很多事情想不起来"，伴反复噩梦、情绪麻木、对周遭事物兴趣减退。\n\n二、现病史\n患者许念，女，生于1997年8月16日。患者自幼父母双亡，由姨妈抚养长大，后独立居住于本市某小区602室。患者在晨光书店担任店员。\n\n2015年7月15日凌晨，患者经历了一起重大创伤性事件（具体经过涉及患者隐私，此处略）。事件发生后，患者被安置于姨妈家中暂住。\n\n约一周后，家属发现患者出现明显的记忆缺失：\n1. 患者对事件发生前后的经历完全无法回忆，仅记得"下班回家，然后就天亮了"；\n2. 对事件相关的人物、地点、物品出现选择性遗忘；\n3. 对童年和青少年时期的部分记忆出现缺失，但对学校、工作等无关记忆保持完整。\n\n患者同时出现以下症状：\n- 反复噩梦，梦中常出现"雨夜""门被撬开"等片段，但无法形成完整梦境；\n- 情绪麻木，对亲友的关心表现淡漠，自述"心里像被挖空了一块"；\n- 回避一切与事件相关的话题和地点，曾试图丢弃相关物品；\n- 注意力下降，工作中频繁出错；\n- 入睡困难，需开灯才能入睡。\n\n三、既往史\n既往体健，无重大躯体疾病史。无精神疾病家族史。无药物过敏史。无烟、酒、毒品嗜好。\n\n四、个人史\n幼年发育正常，学习成绩中上。性格偏内向。案发前无明显异常表现。\n\n五、精神检查\n意识清晰，定向力完整（时间、地点、人物定向均准确）。\n接触被动，对答切题，但语速偏慢，语调平淡。\n感知觉：未查及幻觉、错觉。\n思维：思维联想速度减慢，未查及妄想。谈及事件相关话题时出现明显的思维中断，自述"脑子一片空白"。\n记忆：远记忆尚可，能回忆小学、中学经历；近记忆中与事件相关的部分完全缺失。韦氏记忆量表（WMS）测评：记忆商82，其中"视觉再生""联想学习"分项显著低于常模。\n智能：粗测正常，韦氏成人智力量表（WAIS-RC）：总智商96。\n情感：情感反应平淡，面部表情减少。谈及事件相关话题时出现短暂的情绪波动（眼眶湿润），但迅速恢复麻木状态。\n意志行为：意志活动减退，生活被动，需家属督促才能完成日常活动。无冲动、自伤、伤人行为。\n自知力：部分存在。患者承认自己"记性不好""情绪不好"，但对失忆的具体内容和原因缺乏认识，认为"可能是太累了"。\n\n六、辅助检查\n1. 头颅CT：未见明显异常。\n2. 脑电图（EEG）：轻度异常，α波减少，θ波增多，未见痫样放电。\n3. 心电图：窦性心律，正常心电图。\n4. 血常规、肝肾功能、甲状腺功能：均在正常范围。\n5. 心理测评：\n   - PTSD筛查量表（PCL-5）：42分（≥33分为阳性）\n   - 抑郁自评量表（SDS）：68分（中度抑郁）\n   - 焦虑自评量表（SAS）：55分（轻度焦虑）\n   - 解离体验量表（DES-II）：38分（≥30分为显著解离）\n\n七、诊断\n1. 分离性遗忘症（Dissociative Amnesia）\n   诊断依据（DSM-5）：\n   - 无法回忆起重要的个人信息，通常与创伤或应激事件相关；\n   - 遗忘不能用普通的健忘来解释；\n   - 症状引起具有临床意义的痛苦，或导致社交、职业等重要功能的损害；\n   - 症状不能归因于某种物质的生理效应或神经系统疾病。\n\n2. 创伤后应激障碍（PTSD）\n   诊断依据（DSM-5）：\n   - 暴露于实际的或被威胁的死亡事件；\n   - 存在侵入性症状（反复噩梦、闪回片段）；\n   - 持续回避与创伤相关的刺激；\n   - 认知和心境方面的负性改变（情绪麻木、兴趣减退）；\n   - 警觉性增高（入睡困难、注意力下降）；\n   - 症状持续超过1个月；\n   - 症状引起具有临床意义的痛苦和功能损害。\n\n3. 中度抑郁发作\n\n八、鉴别诊断\n1. 器质性遗忘综合征：头颅CT、脑电图未见明显异常，遗忘具有明显的选择性，不符合器质性遗忘的特点。\n2. 抑郁性假性痴呆：患者存在抑郁症状，但记忆缺失具有明确的创伤诱因和选择性，且智力测评正常，不支持假性痴呆。\n3. 诈病：患者的遗忘症状具有一致性，且伴随PTSD、抑郁等真实症状，社会功能受损明显，不支持诈病。\n\n九、治疗建议\n1. 心理治疗（首选）：\n   - 稳定化治疗：帮助患者建立安全感，学习情绪调节技巧；\n   - 认知行为治疗（CBT）：处理负性认知，缓解抑郁和焦虑；\n   - 暴露疗法（分期进行）：在患者准备充分后，逐步面对创伤相关刺激，促进记忆整合；\n   - 眼动脱敏与再加工（EMDR）：可考虑作为辅助治疗。\n\n2. 药物治疗：\n   - 舍曲林 50mg qd（早餐后），用于改善PTSD和抑郁症状；\n   - 佐匹克隆 7.5mg qn（睡前），短期用于改善睡眠；\n   - 定期复查肝肾功能、心电图。\n\n3. 社会支持：\n   - 建议家属给予耐心和支持，避免催促患者"快点想起来"；\n   - 建议患者暂时不要返回原住所居住；\n   - 建议患者继续工作，但适当减轻工作量。\n\n4. 随访：\n   - 每周心理治疗1次；\n   - 每2周门诊复诊1次，评估症状变化和药物不良反应；\n   - 如出现自伤、自杀念头，立即就诊。\n\n━━━━━━━━━━━━━━━━━━━━\n\n主治医师签名：陈静\n日期：2015年8月10日\n（本报告仅供临床诊疗参考，未经许可不得外传）' },
-        '治疗记录.docx': { type: 'txt', content: '心理治疗记录\n\n患者：许念\n主治医师：陈静\n诊所：陈静心理诊所\n\n━━━━━━━━━━━━━━━━━━━━\n\n第1次治疗\n日期：2015年8月5日\n时长：50分钟\n\n患者由姨妈陪同就诊。初次见面，患者表现得非常拘谨，全程低着头，很少主动说话。\n\n我先做了自我介绍，解释了心理咨询的基本设置和保密原则。患者只是点头，没有回应。\n\n我尝试询问患者最近的睡眠情况，患者沉默了很久才说："睡不着。"我问她睡不着的时候在想什么，她说："什么都没想，就是睁着眼睛到天亮。"\n\n我注意到患者在说"什么都没想"的时候，手指在微微发抖。我没有继续追问，而是先教了她一个简单的呼吸放松练习。患者跟着做了几次，情绪稍微平复了一些。\n\n本次治疗主要以建立关系为主。患者的防御心理很强，对创伤相关的词汇有明显的回避反应。下次治疗将继续以稳定化为目标，不急于触碰创伤内容。\n\n医生备注：患者的解离症状明显，失忆可能是一种自我保护机制。治疗需要非常缓慢，不能操之过急。\n\n━━━━━━━━━━━━━━━━━━━━\n\n第5次治疗\n日期：2015年9月2日\n时长：50分钟\n\n患者今天独自来诊，比第一次放松了一些。她主动提到最近睡眠有所改善，"可以睡四五个小时了"。\n\n我问她是怎么做到的，她说："开着灯睡，然后把电视调到没有信号的频道，听那个雪花声，就觉得没那么害怕了。"\n\n我肯定了她找到的应对方式。然后我小心翼翼地问她："你有没有梦到过什么？"患者沉默了一会儿，说："梦到下雨，还有门响。但是看不清楚，每次快要看清楚的时候就醒了。"\n\n我没有继续追问梦境的细节，而是和她讨论了"安全感"的话题。患者说："我觉得哪里都不安全。在姨妈家也不安全，总觉得门会被撬开。"\n\n我们一起讨论了可以增强安全感的小方法，比如在门后放一个抵门器，睡前检查门窗等。\n\n医生备注：患者开始出现创伤片段的闪回（雨夜、门响），这是记忆开始松动的迹象。但患者的回避仍然很强，需要继续稳定化，不能急于进行暴露。\n\n━━━━━━━━━━━━━━━━━━━━\n\n第12次治疗\n日期：2015年11月4日\n时长：50分钟\n\n患者今天情绪很低落。一进门就说："陈医生，我是不是有问题？"\n\n我问她发生了什么。她说，昨天整理东西的时候，翻到了一个旧手机，"手机壳是粉色的，上面贴了很多贴纸，但是我完全不记得这个手机是谁的"。她打开手机，发现里面有很多照片，"都是两个人的合影，但是其中一个我不认识"。\n\n患者说她当时"头很晕，然后就吐了"。她把手机锁进了抽屉，"不敢再看"。\n\n我陪着她坐了一会儿，让她慢慢平复情绪。然后我问她："你觉得那个不认识的人，可能是谁？"患者摇头："不知道，可能是以前的朋友吧。"\n\n我没有点破。患者的记忆开始出现裂缝，但她的防御机制仍然在努力维持"什么都没发生过"的信念。\n\n本次治疗以情绪稳定和安全感重建为主。我建议患者如果再次出现强烈的情绪反应，可以使用我们之前练习的"着陆技术"（5-4-3-2-1感官练习）。\n\n医生备注：旧手机的发现是一个重要的转折点。患者的解离防御开始出现裂缝。接下来需要非常小心地处理，既不能让患者完全回避，也不能让她被创伤淹没。建议下周增加一次治疗。\n\n━━━━━━━━━━━━━━━━━━━━\n\n第20次治疗\n日期：2016年3月15日\n时长：50分钟\n\n患者今天穿了一件深色的外套，看起来比之前瘦了一些。她一坐下就说："陈医生，我想搬家。"\n\n我问她为什么。她说，姨妈家附近在装修，"电钻的声音让我很烦躁，而且最近总是梦到那个声音"。我问她"那个声音"是什么声音，她沉默了一会儿说："撬门的声音。"\n\n这是患者第一次主动提到"撬门"。我没有表现出惊讶，而是平静地问她："你能多说说这个梦吗？"患者说："梦里总是下雨，然后有什么东西在撬门，我想喊但是喊不出来，然后就醒了。"\n\n我们讨论了这个梦的象征意义。患者说："我觉得那个门是我心里的门，有什么东西想进来，但是我不想让它进来。"\n\n我肯定了她的觉察。然后我问她："你觉得门后面是什么？"患者摇头："不知道，可能是我不想面对的东西吧。"\n\n本次治疗取得了重要进展。患者开始用隐喻的方式触碰创伤内容，这是暴露疗法的准备阶段。\n\n医生备注：患者的自我觉察能力很强。她用"门"的隐喻来描述自己的防御机制，这非常有洞察力。接下来可以逐步引入暴露疗法的概念，让患者在有准备的情况下面对创伤记忆。\n\n━━━━━━━━━━━━━━━━━━━━\n\n第35次治疗\n日期：2016年10月12日\n时长：50分钟\n\n患者今天带来了一个笔记本。她说："陈医生，我最近开始写日记了。"她把笔记本递给我，上面写了很多零散的句子。\n\n我翻了几页，看到这样一些内容：\n- "今天下雨了，我站在窗边看了很久。"\n- "我好像忘记了什么很重要的事情。"\n- "手机里那个人，笑起来很好看。"\n- "我不敢看照片里的眼睛。"\n- "陈医生说，面对比逃避好。但是我好害怕。"\n\n我看完后把笔记本还给她，说："你写得很好。写日记是一个很好的方式，可以帮助你整理自己的感受。"\n\n患者说："我有时候觉得，那个人是我很重要的人。但是我想不起来是谁。我试着去想，但是头会很痛。"\n\n我问她："如果那个人真的是你很重要的人，你觉得他/她会希望你怎么做？"患者沉默了很久，然后说："可能希望我好好活着吧。"\n\n本次治疗以患者的自我探索为主。患者的记忆正在缓慢恢复，但她仍然无法将"那个人"与具体的身份联系起来。\n\n医生备注：患者的日记是一个重要的治疗工具。她在写作中逐渐接近被压抑的记忆。建议继续鼓励她写日记，下次可以带更多内容来讨论。\n\n━━━━━━━━━━━━━━━━━━━━\n\n第50次治疗\n日期：2017年6月20日\n时长：60分钟\n\n今天是一个重要的日子。患者终于同意开始第一阶段的暴露疗法。\n\n我们讨论了暴露疗法的原理和步骤。患者说："我准备好了。我不能一辈子都这样躲着。"\n\n第一阶段的暴露目标是：回到原来的小区，但不进入原住所。患者的姨妈家在另一个区，她已经一年多没有回过原来的小区了。\n\n我们在咨询室里先做了想象暴露。我引导患者想象自己走进小区大门，走过花坛，来到6号楼楼下。患者在想象过程中出现了明显的焦虑反应（心跳加速、手心出汗），但她坚持完成了想象。\n\n然后我们讨论了实地暴露的计划。患者决定下周六上午去小区，在楼下站10分钟，然后离开。我会在治疗后通过电话跟进。\n\n患者离开前说："陈医生，我有点紧张，但是我觉得我可以做到。"\n\n医生备注：患者经过近两年的稳定化治疗，终于准备好面对创伤了。暴露疗法需要非常缓慢地进行，不能急于求成。第一阶段的目标只是回到小区，不进入住所。如果患者出现强烈的情绪反应，随时可以暂停。\n\n━━━━━━━━━━━━━━━━━━━━\n\n第58次治疗\n日期：2017年9月12日\n时长：50分钟\n\n患者今天面带微笑走进咨询室。她说："陈医生，我做到了。"\n\n上周六，患者回到了原来的小区。她在6号楼楼下站了15分钟，"比计划的多了5分钟"。她说："我以为我会很害怕，但是站在那里的时候，我反而觉得很平静。好像有什么东西在告诉我，回来是对的。"\n\n然后她做了一件让我意外的事情——她走到了原住所的门口。她说："我在门口站了一会儿，摸了摸门把手。门是锁着的，里面没有人。"\n\n我问她当时的感受。她说："有点难过，但是也有点安心。我觉得那个房子在等我回去。"\n\n本次治疗取得了重大进展。患者不仅完成了第一阶段的暴露（回到小区），还自发地接近了原住所的门口。这说明她的内在力量正在增强。\n\n我们讨论了第二阶段暴露的可能性：回到原住所居住。患者说："我想回去。那个房子是我生活过的地方，我不能一直躲着。"\n\n医生备注：患者的进步超出了预期。她已经准备好进入第二阶段的暴露疗法（回到原住所居住）。但需要提醒患者，进入住所后可能会出现更强烈的情绪反应和记忆闪回，需要做好心理准备。建议在搬回去之前，先在白天进入住所待几个小时，逐步适应。\n\n━━━━━━━━━━━━━━━━━━━━\n\n第65次治疗\n日期：2018年1月15日\n时长：50分钟\n\n患者已经搬回原住所居住两周了。\n\n她说："搬回去的第一天晚上，我失眠了。我把所有的灯都打开了，坐在客厅里到天亮。但是第二天晚上，我就可以睡几个小时了。"\n\n我问她住所里有没有什么变化。她说："我把另一个房间收拾了一下，但是没有扔东西。书架上的书还在，衣柜里的衣服还在。我觉得这样挺好的。"\n\n这是患者第一次平静地提到"另一个房间"，虽然仍然没有说出房间原来的主人是谁，但这是一个重要的进步。\n\n我问她有没有出现记忆闪回。她说："有一天晚上，我在厨房倒水，突然闻到了番茄炒蛋的味道。但是我没有做饭。然后我就想起了一些事情……"她停顿了一下，"以前有人很喜欢吃番茄炒蛋，每次我做都吃很多。"\n\n患者说完之后哭了。这是她在治疗中第一次因为"以前的事"而哭泣。我没有说话，只是安静地陪着她。\n\n哭了一会儿之后，患者说："陈医生，我好像开始想起来了。"\n\n医生备注：患者搬回原住所后，记忆开始大量恢复。番茄炒蛋的味道触发了关于过去的具体记忆。患者第一次因为过去的事情而哭泣，这是情感连接重建的重要标志。接下来需要继续支持患者，让她在安全的环境中逐步恢复更多记忆。\n\n━━━━━━━━━━━━━━━━━━━━\n\n第72次治疗\n日期：2018年4月23日\n时长：50分钟\n\n患者今天带来了一个好消息："陈医生，我想起来一些事情了。"\n\n她说，上周整理书架的时候，翻到了一本旧相册。"相册里有很多照片，都是两个人的合影。照片背面写着日期和名字。"\n\n患者说："我想起来了，那个人对我很重要。我们一起生活了很多年。"\n\n说出这些话的时候，患者的声音在发抖。她说了很多关于过去的事情，说了将近20分钟。然后她停下来，说："陈医生，那个人不在了。三年前就不在了。"\n\n然后患者开始大哭。这一次，她哭了很久。\n\n等她平复之后，我说："你很勇敢。你用了三年的时间，终于敢面对这件事了。"\n\n患者说："但是我还是想不起来那天晚上发生了什么。我只记得下班回家，然后……然后就是警察来了。中间的事情，我完全不记得。"\n\n我说："有些记忆可能需要更长的时间才能恢复。不要着急，我们慢慢来。"\n\n医生备注：患者终于恢复了关于"那个人"的身份记忆。这是治疗的重大里程碑。但患者对案发当晚的记忆仍然是空白的，这可能是最严重的创伤部分，需要更长时间才能处理。接下来进入第三阶段的暴露疗法：打开电脑，面对过去留下的所有数据。\n\n━━━━━━━━━━━━━━━━━━━━\n\n第78次治疗\n日期：2018年7月9日\n时长：60分钟\n\n今天我们讨论了第三阶段暴露疗法的具体计划。\n\n患者说："书房里还有一台电脑。我一直不敢打开。我知道里面有很多东西，但是我害怕看到。"\n\n我说："你准备好了吗？"患者说："我觉得我准备好了。陈医生，你说过，面对比逃避好。过去的那个人花了那么多心思在电脑里留了那些东西，我不能让那些心血白费。"\n\n我们一起制定了第三阶段的暴露计划：\n1. 第一周：打开电脑，熟悉桌面，不打开任何文件\n2. 第二周：浏览文件夹，了解电脑里有什么\n3. 第三周及以后：逐步打开文件，面对过去留下的内容\n\n我提醒患者："如果在过程中出现强烈的情绪反应或者记忆闪回，随时可以暂停。你可以随时来找我。"\n\n患者说："我知道。陈医生，谢谢你陪我走了这么远。"\n\n我说："是你自己很勇敢。我只是在旁边陪着你而已。"\n\n医生备注：患者即将进入治疗的最后阶段。第三阶段的暴露疗法可能会触发最强烈的情绪反应和记忆闪回，因为电脑里保存着过去留下的所有数据。需要密切关注患者的状态，建议在暴露期间增加治疗频率（每周2次）。如果患者出现自伤、自杀念头或者严重的解离发作，需要立即干预。\n\n━━━━━━━━━━━━━━━━━━━━\n\n治疗记录（续）\n下次预约：2018年7月23日\n主治医师：陈静\n\n（本记录为患者隐私，未经患者书面同意不得向第三方透露）' },
+        '诊断报告.pdf': { type: 'photo', photoFile: 'diagnosis_report.png', desc: '许念的心理诊断报告，2015年8月10日，主治医师陈静' },
         '医嘱.txt': { type: 'txt', content: '暴露疗法第三阶段：\n1. 回到案发公寓居住\n2. 打开电脑，面对遗留数据\n3. 记录每次回忆的细节\n4. 不要回避，不要删除\n\n主治医师：陈医生\n2018年7月' },
       }},
       '给二周目的你': { type: 'folder', secondPlay: true, children: {
@@ -1309,7 +1308,7 @@ function renderExplorer() {
       const name = entry[0], item = entry[1];
       const itemPath = entry[2] || name;
       const safePath = itemPath.replace(/'/g, "\\'");
-      const tl = { folder: '文件夹', drive: '磁盘驱动器', photo: '图片文件', audio: '音频文件', txt: '文本文档', zip: '压缩文件' }[item.type] || item.type;
+      const tl = { folder: '文件夹', drive: '磁盘驱动器', photo: (name.endsWith('.pdf') ? 'PDF文档' : '图片文件'), audio: '音频文件', txt: '文本文档', zip: '压缩文件' }[item.type] || item.type;
       return '<div style="display:grid;grid-template-columns:1fr 120px 100px 80px;padding:4px 8px;font-size:12px;cursor:pointer;gap:8px;align-items:center;" ondblclick="openExplorerItem(\'' + safePath + '\')">'
         + '<div style="display:flex;align-items:center;gap:8px;"><div style="width:18px;height:18px;">' + getSmallIcon(item) + '</div>' + name + '</div>'
         + '<div style="color:#666;">' + (item.date || '2015/7/15') + '</div>'
@@ -1333,6 +1332,9 @@ function getItemIcon(name, item) {
     return '<svg viewBox="0 0 40 40" width="40" height="40"><path d="M4 10 Q4 8 6 8 L16 8 L20 12 L34 12 Q36 12 36 14 L36 30 Q36 32 34 32 L6 32 Q4 32 4 30 Z" fill="#ffc107" stroke="#f9a825"/></svg>';
   }
   if (item.type === 'photo') {
+    if (name && name.endsWith('.pdf')) {
+      return '<svg viewBox="0 0 40 40" width="40" height="40"><path d="M10 4 L28 4 L34 10 L34 36 L10 36 Z" fill="#fff" stroke="#999"/><path d="M28 4 L28 10 L34 10" fill="none" stroke="#999"/><line x1="14" y1="16" x2="30" y2="16" stroke="#ccc"/><line x1="14" y1="21" x2="30" y2="21" stroke="#ccc"/><line x1="14" y1="26" x2="26" y2="26" stroke="#ccc"/></svg>';
+    }
     if (item.photoFile) {
       return '<img src="' + item.photoFile + '" style="width:40px;height:40px;object-fit:cover;border-radius:2px;">';
     }
@@ -1385,11 +1387,7 @@ function openExplorerItem(nameOrPath) {
   } else if (item.type === 'audio') {
     openAudioPlayer(itemName);
   } else if (item.type === 'photo') {
-    if (item.special === 'birthday') {
-      openPhotoViewer(itemName, item);
-    } else {
-      showNarration('（图片预览：' + itemName + '）', 2000);
-    }
+    openPhotoViewer(itemName, item);
   } else if (item.type === 'txt') {
     openTxtFile(itemName, item.content);
   }
@@ -4508,9 +4506,26 @@ function openPhotoViewer(name, file) {
   centerWindow(document.getElementById('photoViewer'));
   bringToFront('photoViewer');
   photoFlipped = false;
-  document.getElementById('photoViewerFront').style.display = 'block';
+  document.getElementById('photoViewerFront').style.display = 'flex';
   document.getElementById('photoViewerBack').classList.remove('show');
-  document.getElementById('flipPhotoBtn').textContent = '查看备注';
+  
+  // 动态设置图片
+  var img = document.querySelector('#photoViewerFront img');
+  if (file.photoFile) {
+    img.src = file.photoFile;
+  } else {
+    img.src = 'birthday.jpg';
+  }
+  
+  // 只有生日照片显示备注按钮，其他照片隐藏toolbar
+  var toolbar = document.querySelector('.photo-viewer-toolbar');
+  if (file.special === 'birthday') {
+    toolbar.style.display = 'flex';
+    document.getElementById('flipPhotoBtn').textContent = '查看备注';
+    document.getElementById('photoViewerBack').innerHTML = '<div class="back-text">我的安，生日快乐<br><span class="signature">—— 2010.06.15</span></div>';
+  } else {
+    toolbar.style.display = 'none';
+  }
   
   // 播放许念旁白（声音发抖）
   if (!birthdayNarrationPlayed && file.special === 'birthday') {
