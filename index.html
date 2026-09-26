@@ -588,13 +588,13 @@ body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden;
 <div class="desktop-icon" data-app="txt"><div class="icon-img"><svg class="icon-svg"><use href="#icon-txt"/></svg></div><div class="icon-label" id="desktopTxtLabel">你回来了.txt</div></div>
 </div>
 <div class="sticky-note" id="stickyNote">记得吃早饭</div>
-<div class="window" id="notepadWindow" style="left: 200px; top: 100px; width: 500px; height: 350px;">
+<div class="window" id="notepadWindow" style="width: 500px; height: 350px;">
 <div class="window-titlebar"><div class="window-title" id="notepadTitle">你回来了.txt - 记事本</div><div class="window-controls"><div class="window-btn" onclick="minimizeWindow('notepadWindow')">—</div><div class="window-btn" onclick="maximizeWindow('notepadWindow')">▢</div><div class="window-btn close" onclick="closeWindow('notepadWindow')">✕</div></div></div>
 <div class="window-menubar"><span>文件(F)</span><span>编辑(E)</span><span>格式(O)</span><span>查看(V)</span><span>帮助(H)</span></div>
 <div class="window-content"><textarea id="notepadContent" readonly>你回来了。</textarea></div>
 <div class="window-statusbar"><span>第 1 行，第 1 列</span><span style="margin-left: auto;">100%</span></div>
 </div>
-<div class="window explorer-window" id="explorerWindow" style="left: 150px; top: 80px; width: 700px; height: 480px;">
+<div class="window explorer-window" id="explorerWindow" style="width: 700px; height: 480px;">
 <div class="window-titlebar"><div class="window-title">文件资源管理器</div><div class="window-controls"><div class="window-btn" onclick="minimizeWindow('explorerWindow')">—</div><div class="window-btn" onclick="maximizeWindow('explorerWindow')">▢</div><div class="window-btn close" onclick="closeWindow('explorerWindow')">✕</div></div></div>
 <div class="explorer-toolbar">
 <div class="explorer-nav-btn disabled" id="explorerBack" onclick="explorerBack()">←</div>
@@ -630,7 +630,7 @@ body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden;
 <div class="explorer-statusbar" id="explorerStatusbar"></div>
 </div>
 <div class="explorer-context-menu" id="explorerContextMenu"></div>
-<div class="window browser-window" id="browserWindow" style="left: 100px; top: 60px; width: 750px; height: 520px;">
+<div class="window browser-window" id="browserWindow" style="width: 750px; height: 520px;">
 <div class="window-titlebar"><div class="window-title">未度浏览器</div><div class="window-controls"><div class="window-btn" onclick="minimizeWindow('browserWindow')">—</div><div class="window-btn" onclick="maximizeWindow('browserWindow')">▢</div><div class="window-btn close" onclick="closeWindow('browserWindow')">✕</div></div></div>
 <div class="browser-tabbar" id="browserTabbar"></div>
 <div class="browser-toolbar">
@@ -663,7 +663,7 @@ body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden;
 </div>
 <div class="browser-content" id="browserContent"></div>
 </div>
-<div class="window wechat-window" id="wechatWindow" style="left: 120px; top: 70px; width: 800px; height: 550px;">
+<div class="window wechat-window" id="wechatWindow" style="width: 800px; height: 550px;">
 <div class="window-titlebar"><div class="window-title">微信</div><div class="window-controls"><div class="window-btn" onclick="minimizeWindow('wechatWindow')">—</div><div class="window-btn" onclick="maximizeWindow('wechatWindow')">▢</div><div class="window-btn close" onclick="closeWechat()">✕</div></div></div>
 <div class="wechat-body">
   <div class="wechat-sidebar">
@@ -698,7 +698,7 @@ body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden;
 </div>
 </div>
 
-<div class="window monitor-window" id="monitorWindow" style="left: 80px; top: 50px; width: 900px; height: 600px;">
+<div class="window monitor-window" id="monitorWindow" style="width: 900px; height: 600px;">
 <div class="window-titlebar"><div class="window-title">公寓监控系统 v2.1</div><div class="window-controls"><div class="window-btn" onclick="minimizeWindow('monitorWindow')">—</div><div class="window-btn" onclick="maximizeWindow('monitorWindow')">▢</div><div class="window-btn close" onclick="closeWindow('monitorWindow')">✕</div></div></div>
 <div class="monitor-body">
   <div class="monitor-timeline">
@@ -838,7 +838,7 @@ body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden;
 <div id="zipPhotoDesc" style="padding:10px;background:#2a2a2a;color:#ccc;font-size:13px;text-align:center;"></div>
 </div>
 </div>
-<div class="window" id="memoWindow" style="left:300px;top:120px;width:420px;height:500px;z-index:100;">
+<div class="window" id="memoWindow" style="width:420px;height:500px;z-index:100;">
 <div class="window-titlebar"><div class="window-title">备忘录 - 无标题</div><div class="window-controls"><div class="window-btn" onclick="minimizeWindow('memoWindow')">—</div><div class="window-btn" onclick="maximizeWindow('memoWindow')">▢</div><div class="window-btn close" onclick="closeWindow('memoWindow')">✕</div></div></div>
 <div class="window-content" style="padding:0;display:flex;flex-direction:column;height:calc(100% - 32px);">
 <div id="memoList" style="flex:1;overflow-y:auto;"></div>
@@ -915,6 +915,14 @@ let audioCtx = null;
 let globalVolume = 0.5;
 let windowZIndex = 100;
 
+function centerWindow(win) {
+  if (!win) return;
+  if (!win.style.left && !win.style.top) {
+    win.style.left = '50%';
+    win.style.top = '50%';
+    win.style.transform = 'translate(-50%, -50%)';
+  }
+}
 function bringToFront(win) {
   if (typeof win === "string") win = document.getElementById(win);
   if (win) {
@@ -1039,6 +1047,7 @@ document.getElementById('stage-desktop').addEventListener('click', (e) => { if (
 function openNotepad() {
   document.getElementById('clickHint').style.display = 'none';
   document.getElementById('notepadWindow').classList.add('open');
+  centerWindow(document.getElementById('notepadWindow'));
   bringToFront('notepadWindow');
   document.querySelectorAll('.taskbar-app').forEach(a => a.classList.remove('active'));
   firstTxtOpened = true;
@@ -1084,6 +1093,7 @@ function openTxtFile(filename, content) {
   
   document.getElementById('clickHint').style.display = 'none';
   document.getElementById('notepadWindow').classList.add('open');
+  centerWindow(document.getElementById('notepadWindow'));
   bringToFront('notepadWindow');
   document.querySelectorAll('.taskbar-app').forEach(a => a.classList.remove('active'));
   
@@ -1202,6 +1212,7 @@ let explorerSearchQuery = '';
 function openExplorer() {
   const win = document.getElementById('explorerWindow');
   win.classList.add('open');
+  centerWindow(win);
   bringToFront('explorerWindow');
   explorerPath = ['此电脑'];
   explorerHistory = [['此电脑']];
@@ -1726,6 +1737,7 @@ let memoItems = [];
 
 function openMemo() {
   document.getElementById('memoWindow').classList.add('open');
+  centerWindow(document.getElementById('memoWindow'));
   bringToFront('memoWindow');
   if (memoItems.length === 0) {
     addMemoItem();
@@ -1961,6 +1973,7 @@ function renderActiveTabContent() {
 
 function openBrowser() { browserViewed = true;
   document.getElementById('browserWindow').classList.add('open');
+  centerWindow(document.getElementById('browserWindow'));
   bringToFront('browserWindow');
   browserTabs = [];
   activeTabId = null;
@@ -3456,6 +3469,7 @@ let activeWechatChat = null;
 
 function openWechat() {
   document.getElementById('wechatWindow').classList.add('open');
+  centerWindow(document.getElementById('wechatWindow'));
   bringToFront('wechatWindow');
   document.getElementById('wechatTrayPopup').classList.remove('show');
   renderWechatChatList();
@@ -3694,6 +3708,7 @@ let monitorNarrationPlayed = false;
 
 function openMonitor() { monitorViewed = true;
   document.getElementById('monitorWindow').classList.add('open');
+  centerWindow(document.getElementById('monitorWindow'));
   bringToFront('monitorWindow');
   renderMonitorTimeline();
   showMonitorLive();
@@ -4272,6 +4287,7 @@ function initAudioCtx() {
 
 function openAudioPlayer(name) {
   document.getElementById('audioPlayerWindow').classList.add('open');
+  centerWindow(document.getElementById('audioPlayerWindow'));
   bringToFront('audioPlayerWindow');
   resetAudio();
 
@@ -4516,6 +4532,7 @@ let birthdayNarrationPlayed = false;
 function openPhotoViewer(name, file) {
   document.getElementById('photoViewerTitle').textContent = name;
   document.getElementById('photoViewer').classList.add('open');
+  centerWindow(document.getElementById('photoViewer'));
   bringToFront('photoViewer');
   photoFlipped = false;
   document.getElementById('photoViewerFront').style.display = 'block';
