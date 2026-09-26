@@ -3788,15 +3788,19 @@ function showMonitorEncrypted(dateObj) {
       <div class="lock-icon" style="font-size:64px;color:#666;">🔒</div>
       <div class="lock-text" style="color:#999;font-size:16px;font-family:monospace;">该时段录像已加密</div>
       <div class="lock-text" style="color:#666;font-size:13px;font-family:monospace;">请输入密码解锁：</div>
-      <input type="password" id="monitorPasswordInput" placeholder="请输入4位数密码" style="width:240px;padding:10px;background:#111;border:1px solid #444;color:#0f0;font-family:monospace;text-align:center;border-radius:4px;outline:none;font-size:14px;"><div style="color:#555;font-size:11px;font-family:monospace;margin-top:8px;">提示：你的生日</div>
-      <button onclick="unlockMonitor('${dateObj.date}')" style="padding:10px 32px;background:#0f0;color:#000;border:none;border-radius:4px;cursor:pointer;font-size:14px;font-weight:bold;">解密</button>
+      <input type="password" id="monitorPasswordInput" placeholder="请输入4位数密码" style="width:240px;padding:10px;background:#111;border:1px solid #444;color:#0f0;font-family:monospace;text-align:center;border-radius:4px;outline:none;font-size:14px;" onkeydown="if(event.key==='Enter')unlockMonitor('${dateObj.date}')">
+      <div id="monitorPasswordError" style="display:none;color:#f44;font-size:12px;font-family:monospace;margin-top:8px;letter-spacing:1px;">[ERROR] 密码错误，访问被拒绝</div>
+      <div style="color:#555;font-size:11px;font-family:monospace;margin-top:8px;">提示：你的生日</div>
+      <button onclick="unlockMonitor('${dateObj.date}')" style="padding:10px 32px;background:#0f0;color:#000;border:none;border-radius:4px;cursor:pointer;font-size:14px;font-weight:bold;margin-top:8px;">解密</button>
     </div>
   `;
 }
 
 function unlockMonitor(date) {
   const input = document.getElementById('monitorPasswordInput');
+  const errorEl = document.getElementById('monitorPasswordError');
   if (input.value === '0816') {
+    if (errorEl) errorEl.style.display = 'none';
     monitorUnlocked = true;
     currentMonitorDate = date;
     renderMonitorTimeline();
@@ -3804,7 +3808,12 @@ function unlockMonitor(date) {
     // 播放3年前加密录像：雨夜撬门
     playEncryptedVideo();
   } else {
-    alert('密码错误，请重试');
+    if (errorEl) {
+      errorEl.style.display = 'block';
+      // 抖动效果
+      input.style.borderColor = '#f44';
+      setTimeout(() => { input.style.borderColor = '#444'; }, 500);
+    }
     input.value = '';
     input.focus();
   }
