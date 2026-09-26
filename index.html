@@ -649,11 +649,11 @@ body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden;
 
 <div class="browser-bookmarks-bar">
 <div class="browser-bookmark-item browser-bookmark-folder" id="bookmarkFolder" onclick="toggleBookmarkFolder(event)">
-<span class="folder-icon">📁</span> 给念的礼物
+<span class="folder-icon">📁</span> 我的收藏
 <div class="browser-bookmark-dropdown">
 <div class="bookmark-link" onclick="openBookmark(0)"><span class="favicon">摩</span>摩斯密码对照表</div>
 <div class="bookmark-link" onclick="openBookmark(1)"><span class="favicon">栅</span>栅栏密码入门</div>
-<div class="bookmark-link" onclick="openBookmark(2)"><span class="favicon">录</span>如何用录音隐藏摩斯密码</div>
+
 </div>
 </div>
 <div class="browser-bookmark-item" onclick="quickSearch('书店招聘')"><span>💼</span> 工作</div>
@@ -1129,7 +1129,7 @@ function findFileContent(filename) {
 }
 function closeWindow(id) { document.getElementById(id).classList.remove('open'); }
 function minimizeWindow(id) { document.getElementById(id).style.display = 'none'; setTimeout(() => { document.getElementById(id).style.display = ''; }, 10); document.getElementById(id).classList.remove('open'); }
-function maximizeWindow(id) { const win = document.getElementById(id); if (win.style.width === '100vw') { win.style.width = '500px'; win.style.height = '350px'; win.style.left = '200px'; win.style.top = '100px'; } else { win.style.width = '100vw'; win.style.height = 'calc(100vh - 40px)'; win.style.left = '0'; win.style.top = '0'; } }
+function maximizeWindow(id) { const win = document.getElementById(id); if (win.classList.contains('maximized')) { win.classList.remove('maximized'); win.style.width = win.dataset.origWidth || '500px'; win.style.height = win.dataset.origHeight || '350px'; win.style.left = win.dataset.origLeft || '50%'; win.style.top = win.dataset.origTop || '50%'; win.style.transform = win.dataset.origTransform || 'translate(-50%, -50%)'; } else { win.dataset.origWidth = win.style.width; win.dataset.origHeight = win.style.height; win.dataset.origLeft = win.style.left; win.dataset.origTop = win.style.top; win.dataset.origTransform = win.style.transform; win.classList.add('maximized'); win.style.width = window.innerWidth + 'px'; win.style.height = (window.innerHeight - 40) + 'px'; win.style.left = '0px'; win.style.top = '0px'; win.style.transform = 'none'; } }
 let dragWindow = null, dragX = 0, dragY = 0;
 document.querySelectorAll('.window-titlebar').forEach(titlebar => { titlebar.addEventListener('mousedown', (e) => { dragWindow = titlebar.closest('.window'); dragX = e.clientX - dragWindow.offsetLeft; dragY = e.clientY - dragWindow.offsetTop; e.preventDefault(); }); });
 document.addEventListener('mousemove', (e) => { if (dragWindow) { dragWindow.style.left = (e.clientX - dragX) + 'px'; dragWindow.style.top = (e.clientY - dragY) + 'px'; } });
@@ -3128,23 +3128,23 @@ const bookmarks = [
       <p><strong>解密方法：</strong>把密文按奇数位和偶数位分开，奇数位组成前半，偶数位组成后半，前半+后半=明文</p>
       
       <h4>加密示例</h4>
-      <p>以明文 <strong>BIRTHDAY</strong> 为例（8个字母）：</p>
+      <p>以明文 <strong>HELLOWORLD</strong> 为例（10个字母）：</p>
       <ol>
-        <li>分成前后两半：前半 <strong>BIRT</strong>，后半 <strong>HDAY</strong></li>
-        <li>交替读取：B(前1) H(后1) I(前2) D(后2) R(前3) A(后3) T(前4) Y(后4)</li>
-        <li>得到密文：<strong>BHIDRATY</strong></li>
+        <li>分成前后两半：前半 <strong>HELLO</strong>，后半 <strong>WORLD</strong></li>
+        <li>交替读取：H(前1) W(后1) E(前2) O(后2) L(前3) R(后3) L(前4) L(后4) O(前5) D(后5)</li>
+        <li>得到密文：<strong>HWEOLRLLOD</strong></li>
       </ol>
       
       <h4>解密示例</h4>
-      <p>以密文 <strong>BHIDRATY</strong> 为例：</p>
+      <p>以密文 <strong>HWEOLRLLOD</strong> 为例：</p>
       <ol>
         <li>按位置分开：
           <ul>
-            <li>奇数位（第1、3、5、7个）：<strong>B I R T</strong></li>
-            <li>偶数位（第2、4、6、8个）：<strong>H D A Y</strong></li>
+            <li>奇数位（第1、3、5、7、9个）：<strong>H E L L O</strong></li>
+            <li>偶数位（第2、4、6、8、10个）：<strong>W O R L D</strong></li>
           </ul>
         </li>
-        <li>前半 + 后半 = <strong>BIRT + HDAY = BIRTHDAY</strong></li>
+        <li>前半 + 后半 = <strong>HELLO + WORLD = HELLOWORLD</strong></li>
       </ol>
       
       <div style="background:#fff3cd;padding:12px;border-radius:6px;margin:16px 0;">
@@ -3159,52 +3159,6 @@ const bookmarks = [
         <li>2栏是最常见的，建议先尝试2栏</li>
         <li>如果解密后读不通，尝试其他栏数</li>
         <li>栅栏密码常与其他密码组合使用，增加破解难度</li>
-      </ul>
-    `
-  },
-  {
-    title: '如何用录音隐藏摩斯密码',
-    url: 'www.audio-steganography.com/morse-in-audio',
-    content: `
-      <h3>音频隐写术：用录音隐藏摩斯密码</h3>
-      <p>音频隐写术是将秘密信息隐藏在音频文件中的技术。用摩斯密码隐藏在录音里，是最简单也最不容易被发现的方式之一。</p>
-      <h3>基本原理</h3>
-      <p>将摩斯密码的"滴"（短音）和"答"（长音）编码到音频的节奏中：</p>
-      <ul>
-        <li><strong>短音（滴）</strong> = 1个时间单位的声音</li>
-        <li><strong>长音（答）</strong> = 3个时间单位的声音</li>
-        <li><strong>信号间隔</strong> = 1个时间单位的静音</li>
-        <li><strong>字母间隔</strong> = 3个时间单位的静音</li>
-        <li><strong>单词间隔</strong> = 7个时间单位的静音</li>
-      </ul>
-      <h3>常见编码方式</h3>
-      <h3>1. 哼唱旋律</h3>
-      <p>用哼唱的长短来编码。短哼=滴，长哼=答。哼唱的停顿就是间隔。听起来像随意哼歌，实际上是摩斯密码。</p>
-      <p>例如编码"0816"：</p>
-      <ul>
-        <li>0 = -----（5个长音）</li>
-        <li>8 = ---..（3长2短）</li>
-        <li>1 = .----（1短4长）</li>
-        <li>6 = -....（1长4短）</li>
-      </ul>
-      <h3>2. 敲击声</h3>
-      <p>用敲击物体的声音来编码。轻敲=滴，重敲或连续敲=答。敲击的间隔就是信号间隔。</p>
-      <h3>3. 环境音</h3>
-      <p>利用环境中的自然声音，如脚步声、关门声、水龙头滴水声等，通过声音出现的时间间隔来编码。这种方式最隐蔽。</p>
-      <h3>解码方法</h3>
-      <ol>
-        <li>仔细听录音，标记每个声音的开始和结束时间</li>
-        <li>计算每个声音的持续时间，区分短音和长音</li>
-        <li>计算声音之间的间隔，区分信号间隔、字母间隔和单词间隔</li>
-        <li>将短音记为"."，长音记为"-"</li>
-        <li>对照摩斯密码表解密</li>
-      </ol>
-      <h3>注意事项</h3>
-      <ul>
-        <li>时间单位要统一，否则无法解码</li>
-        <li>背景噪音不能太大，否则会干扰识别</li>
-        <li>可以用音频编辑软件（如Audacity）查看波形，更准确地识别长短音</li>
-        <li>哼唱编码时，音高可以随意变化，只有节奏长短是关键</li>
       </ul>
     `
   }
