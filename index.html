@@ -3752,9 +3752,20 @@ function openSingleCam(camNum) {
   currentSingleCam = camNum;
   document.getElementById('monitorGrid').style.display = 'none';
   document.getElementById('monitorSingle').classList.add('active');
-  document.getElementById('monitorSingleInfo').textContent = 'CAM 0' + camNum + ' ' + camNames[camNum-1];
   
-  const video = document.getElementById('monitorSingleVideo');
+  // 如果video元素不存在（可能被加密页面替换掉了），先重建标准结构
+  let video = document.getElementById('monitorSingleVideo');
+  if (!video) {
+    const single = document.getElementById('monitorSingle');
+    single.innerHTML = 
+      '<div class="monitor-single-back" onclick="closeSingleCam()">← 返回4宫格</div>' +
+      '<div class="monitor-single-info" id="monitorSingleInfo"></div>' +
+      '<video id="monitorSingleVideo" loop playsinline></video>' +
+      '<div class="monitor-noise"></div>';
+    video = document.getElementById('monitorSingleVideo');
+  }
+  
+  document.getElementById('monitorSingleInfo').textContent = 'CAM 0' + camNum + ' ' + camNames[camNum-1];
   video.src = videos[camNum].src;
   video.muted = false;
   video.volume = globalVolume * 0.7;
@@ -3774,7 +3785,7 @@ function closeSingleCam() {
   const video = document.getElementById('monitorSingleVideo');
   if (video) {
     video.pause();
-    video.src = '';
+    try { video.src = ''; } catch(e) {}
   }
   document.getElementById('monitorSingle').classList.remove('active');
   document.getElementById('monitorGrid').style.display = 'grid';
