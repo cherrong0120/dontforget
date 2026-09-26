@@ -1043,11 +1043,18 @@ function openNotepad() {
   bringToFront('notepadWindow');
   document.querySelectorAll('.taskbar-app').forEach(a => a.classList.remove('active'));
   firstTxtOpened = true;
+  
+  // 设置文件内容（避免显示之前打开的其他txt内容）
+  const notepadContent = document.querySelector('#notepadWindow textarea');
+  const titleEl = document.getElementById('notepadTitle');
   if (isSecondPlaythrough) {
-    // 二周目：修改标题，不播放旁白
-    document.getElementById('notepadTitle').textContent = '欢迎回家，念.txt - 记事本';
+    // 二周目：修改标题和内容，不播放旁白
+    if (titleEl) titleEl.textContent = '欢迎回家，念.txt - 记事本';
+    if (notepadContent) notepadContent.value = '欢迎回家，念。';
   } else {
-    // 一周目：播放旁白
+    // 一周目：设置内容，播放旁白
+    if (titleEl) titleEl.textContent = '你回来了.txt - 记事本';
+    if (notepadContent) notepadContent.value = '你回来了。';
     const a = document.getElementById('narrationAudio');
     a.currentTime = 0;
     a.playbackRate = 1.0;
