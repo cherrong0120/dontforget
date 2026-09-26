@@ -1230,8 +1230,10 @@ function renderExplorer() {
       let results = [];
       for (const [name, item] of Object.entries(folderObj)) {
         const fullPath = pathPrefix ? pathPrefix + '/' + name : name;
-        // 匹配文件名
-        if (name.toLowerCase().indexOf(q) !== -1) {
+        // 匹配文件名（生日.jpg同时支持birthday/BIRTHDAY/生日搜索）
+        const nameMatch = name.toLowerCase().indexOf(q) !== -1;
+        const birthdayMatch = item.special === 'birthday' && (q === 'birthday' || q === '生日');
+        if (nameMatch || birthdayMatch) {
           // 跳过非搜索时隐藏的项目，但生日特殊文件在搜索时显示
           if (item.special === 'birthday' || (!item.hidden && !item.secondPlay) || (item.hidden && explorerShowHidden)) {
             results.push([name, item]);
