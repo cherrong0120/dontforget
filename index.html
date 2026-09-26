@@ -1150,15 +1150,8 @@ const fileSystem = {
     'D:': { type: 'drive', children: {
       '工作': { type: 'folder', children: {}, locked: true },
       '照片': { type: 'folder', children: {
-        'IMG_20150601_海边.jpg': { type: 'photo', color: '#87CEEB' },
-        '生日.jpg': { type: 'photo', color: '#FFB6C1', blurred: true, special: 'birthday', hidden: true },
-        'IMG_20150701_书店.jpg': { type: 'photo', color: '#DEB887' },
-        'IMG_20150710_公园.jpg': { type: 'photo', color: '#90EE90', blurred: true },
-        'IMG_20150714_最后一张.jpg': { type: 'photo', color: '#DDA0DD', blurred: true },
-        'Screenshot_20180101.png': { type: 'photo', color: '#B0C4DE' },
-        'IMG_20180305_新家.jpg': { type: 'photo', color: '#F0E68C' },
-        'IMG_20180620_下班.jpg': { type: 'photo', color: '#FFA07A' }
-      }},
+        '生日.jpg': { type: 'photo', color: '#FFB6C1', blurred: true, special: 'birthday', hidden: true }
+      }, locked: true },
       '安装包': { type: 'folder', children: {}, locked: true },
       '新建文件夹 (2)': { type: 'folder', children: {
         '哼歌.mp3': { type: 'audio' },
@@ -1232,9 +1225,26 @@ function renderExplorer() {
 
   if (explorerSearchQuery) {
     const q = explorerSearchQuery.toLowerCase();
-    items = items.filter(function(entry) {
-      return entry[0].toLowerCase().indexOf(q) !== -1;
-    });
+    // 递归搜索当前文件夹及所有子文件夹
+    const recursiveSearch = function(folderObj, pathPrefix) {
+      let results = [];
+      for (const [name, item] of Object.entries(folderObj)) {
+        const fullPath = pathPrefix ? pathPrefix + '/' + name : name;
+        // 匹配文件名
+        if (name.toLowerCase().indexOf(q) !== -1) {
+          // 跳过非搜索时隐藏的项目，但生日特殊文件在搜索时显示
+          if (item.special === 'birthday' || (!item.hidden && !item.secondPlay) || (item.hidden && explorerShowHidden)) {
+            results.push([name, item]);
+          }
+        }
+        // 递归搜索子文件夹（包括locked文件夹，因为生日.jpg在locked的照片文件夹里）
+        if (item.type === 'folder' && item.children) {
+          results = results.concat(recursiveSearch(item.children, fullPath));
+        }
+      }
+      return results;
+    };
+    items = recursiveSearch(folder, '');
   }
 
   items.sort(function(a, b) {
@@ -1330,7 +1340,6 @@ function openExplorerItem(name) {
   const item = folder[name];
   if (item.type === 'folder' || item.type === 'drive') {
     if (item.locked) {
-      showNarration('（你没有权限访问此文件夹）', 3000);
       return;
     }
     navigateTo(explorerPath.concat(name).join('/'));
