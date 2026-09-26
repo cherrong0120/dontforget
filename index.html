@@ -3566,11 +3566,26 @@ function renderWechatMessages(contact) {
     </div>
   `;
   
-  // 滚动到底部
-  setTimeout(() => {
+  // 滚动到底部（等待图片加载完成）
+  const scrollToBottom = () => {
     const msgContainer = document.getElementById('wechatMessages');
     if (msgContainer) msgContainer.scrollTop = msgContainer.scrollHeight;
-  }, 100);
+  };
+  setTimeout(scrollToBottom, 50);
+  // 等待所有图片加载完成后再次滚动
+  const imgs = document.querySelectorAll('#wechatMessages img');
+  let loaded = 0;
+  if (imgs.length > 0) {
+    imgs.forEach(img => {
+      if (img.complete) {
+        loaded++;
+        if (loaded === imgs.length) scrollToBottom();
+      } else {
+        img.onload = () => { loaded++; if (loaded === imgs.length) scrollToBottom(); };
+        img.onerror = () => { loaded++; if (loaded === imgs.length) scrollToBottom(); };
+      }
+    });
+  }
   
   // 绑定回车发送
   const input = document.getElementById('wechatInput');
@@ -4159,8 +4174,22 @@ function appendWechatMessage(contact, msg) {
       + '</div>';
   }
   msgContainer.insertAdjacentHTML('beforeend', html);
-  // 滚动到底部
-  msgContainer.scrollTop = msgContainer.scrollHeight;
+  // 滚动到底部（等待新图片加载完成）
+  const scrollToBottom2 = () => { msgContainer.scrollTop = msgContainer.scrollHeight; };
+  scrollToBottom2();
+  const newImgs = msgContainer.querySelectorAll('img');
+  let loaded2 = 0;
+  if (newImgs.length > 0) {
+    newImgs.forEach(img => {
+      if (img.complete) {
+        loaded2++;
+        if (loaded2 === newImgs.length) scrollToBottom2();
+      } else {
+        img.onload = () => { loaded2++; if (loaded2 === newImgs.length) scrollToBottom2(); };
+        img.onerror = () => { loaded2++; if (loaded2 === newImgs.length) scrollToBottom2(); };
+      }
+    });
+  }
 }
 
 function searchChatMessages() {
