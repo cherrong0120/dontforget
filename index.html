@@ -1140,7 +1140,21 @@ function minimizeWindow(id) { document.getElementById(id).style.display = 'none'
 function maximizeWindow(id) { const win = document.getElementById(id); if (win.classList.contains('maximized')) { win.classList.remove('maximized'); win.style.width = win.dataset.origWidth || '500px'; win.style.height = win.dataset.origHeight || '350px'; win.style.left = win.dataset.origLeft || '50%'; win.style.top = win.dataset.origTop || '50%'; win.style.transform = win.dataset.origTransform || 'translate(-50%, -50%)'; } else { win.dataset.origWidth = win.style.width; win.dataset.origHeight = win.style.height; win.dataset.origLeft = win.style.left; win.dataset.origTop = win.style.top; win.dataset.origTransform = win.style.transform; win.classList.add('maximized'); win.style.width = window.innerWidth + 'px'; win.style.height = (window.innerHeight - 40) + 'px'; win.style.left = '0px'; win.style.top = '0px'; win.style.transform = 'none'; } }
 let dragWindow = null, dragX = 0, dragY = 0;
 document.querySelectorAll('.window-titlebar').forEach(titlebar => { titlebar.addEventListener('mousedown', (e) => { dragWindow = titlebar.closest('.window'); dragX = e.clientX - dragWindow.offsetLeft; dragY = e.clientY - dragWindow.offsetTop; e.preventDefault(); }); });
-document.addEventListener('mousemove', (e) => { if (dragWindow) { dragWindow.style.left = (e.clientX - dragX) + 'px'; dragWindow.style.top = (e.clientY - dragY) + 'px'; } });
+document.addEventListener('mousemove', (e) => { 
+  if (dragWindow) { 
+    let newLeft = e.clientX - dragX;
+    let newTop = e.clientY - dragY;
+    // 限制窗口位置，确保标题栏始终在屏幕内（至少80px可见）
+    const winWidth = dragWindow.offsetWidth;
+    const minLeft = -winWidth + 80;
+    const maxLeft = window.innerWidth - 80;
+    const maxTop = window.innerHeight - 40;
+    newLeft = Math.max(minLeft, Math.min(maxLeft, newLeft));
+    newTop = Math.max(0, Math.min(maxTop, newTop));
+    dragWindow.style.left = newLeft + 'px'; 
+    dragWindow.style.top = newTop + 'px'; 
+  } 
+});
 document.addEventListener('mouseup', () => { dragWindow = null; });
 let narrationTimer = null;
 function playNarration(file, volume) {
