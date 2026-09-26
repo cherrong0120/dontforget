@@ -796,10 +796,6 @@ body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden;
 <div class="chapter1-blackout" id="chapter1Blackout">
   <div class="chapter1-text" id="chapter1Text"></div>
 </div>
-<div class="wechat-tray-popup" id="wechatTrayPopup">
-  <div class="wechat-tray-popup-item" onclick="openWechat()">打开微信</div>
-  <div class="wechat-tray-popup-item" onclick="exitWechat()">退出微信</div>
-</div>
 <div class="zip-password-modal" id="zipModal">
 <h3>礼物.zip - 解压</h3>
 <div class="error" id="zipError">密码错误，请重试</div>
@@ -3414,25 +3410,11 @@ function openWechat() {
   document.getElementById('wechatWindow').classList.add('open');
   centerWindow(document.getElementById('wechatWindow'));
   bringToFront('wechatWindow');
-  document.getElementById('wechatTrayPopup').classList.remove('show');
   renderWechatChatList();
 }
 
 function closeWechat() {
   document.getElementById('wechatWindow').classList.remove('open');
-  // 最小化到托盘，不退出
-  showWechatTrayHint();
-}
-
-function showWechatTrayHint() {
-  const popup = document.getElementById('wechatTrayPopup');
-  popup.classList.add('show');
-  setTimeout(() => popup.classList.remove('show'), 3000);
-}
-
-function exitWechat() {
-  document.getElementById('wechatTrayPopup').classList.remove('show');
-  alert('微信已退出');
 }
 
 function renderWechatChatList(filter = '') {
