@@ -1149,7 +1149,7 @@ let dragNote = null, noteX = 0, noteY = 0;
 document.getElementById('stickyNote').addEventListener('mousedown', (e) => { dragNote = e.target; noteX = e.clientX - dragNote.offsetLeft; noteY = e.clientY - dragNote.offsetTop; e.preventDefault(); });
 document.addEventListener('mousemove', (e) => { if (dragNote) { dragNote.style.left = (e.clientX - noteX) + 'px'; dragNote.style.top = (e.clientY - noteY) + 'px'; dragNote.style.right = 'auto'; dragNote.style.bottom = 'auto'; } });
 document.addEventListener('mouseup', () => { dragNote = null; });
-document.body.addEventListener('click', function init() { startGame(); document.body.removeEventListener('click', init); }, { once: true });
+// 初始页面默认显示游戏介绍页，无需body点击触发startGame
 // ========== 文件管理器 ==========
 const fileSystem = {
   '此电脑': { type: 'folder', children: {
