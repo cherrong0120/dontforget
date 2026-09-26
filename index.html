@@ -1134,9 +1134,9 @@ document.querySelectorAll('.window-titlebar').forEach(titlebar => { titlebar.add
 document.addEventListener('mousemove', (e) => { if (dragWindow) { dragWindow.style.left = (e.clientX - dragX) + 'px'; dragWindow.style.top = (e.clientY - dragY) + 'px'; } });
 document.addEventListener('mouseup', () => { dragWindow = null; });
 let narrationTimer = null;
-function playNarration(file) {
+function playNarration(file, volume) {
   const audio = new Audio(file);
-  audio.volume = globalVolume * 0.9;
+  audio.volume = globalVolume * (volume || 0.9);
   audio.play().catch(function(e) { console.log('旁白播放需要用户点击'); });
   return audio;
 }
@@ -4526,7 +4526,7 @@ function openPhotoViewer(name, file) {
   if (!birthdayNarrationPlayed && file.special === 'birthday') {
     birthdayNarrationPlayed = true;
     setTimeout(() => {
-      playNarration('narration_birthday.mp3?v=3');
+      playNarration('narration_birthday.mp3?v=6', 1.5);
     }, 1500);
   }
 }
