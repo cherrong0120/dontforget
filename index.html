@@ -147,8 +147,8 @@ body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden;
 .explorer-nav-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 2px; font-size: 14px; color: #666; }
 .explorer-nav-btn:hover { background: #e0e0e0; }
 .explorer-nav-btn.disabled { opacity: 0.3; cursor: default; }
-.explorer-addressbar { flex: 1; height: 28px; background: #fff; border: 1px solid #ccc; border-radius: 2px; display: flex; align-items: center; padding: 0 8px; font-size: 12px; color: #333; }
-.explorer-addressbar .breadcrumb { cursor: pointer; padding: 2px 4px; border-radius: 2px; }
+.explorer-addressbar { flex: 1; min-width: 120px; height: 28px; background: #fff; border: 1px solid #ccc; border-radius: 2px; display: flex; align-items: center; padding: 0 8px; font-size: 12px; color: #333; white-space: nowrap; overflow: hidden; }
+.explorer-addressbar .breadcrumb { cursor: pointer; padding: 2px 4px; border-radius: 2px; white-space: nowrap; flex-shrink: 0; }
 .explorer-addressbar .breadcrumb:hover { background: #e5f3ff; }
 .explorer-addressbar .sep { color: #999; margin: 0 2px; }
 .explorer-search { width: 180px; height: 28px; background: #fff; border: 1px solid #ccc; border-radius: 2px; display: flex; align-items: center; padding: 0 8px; font-size: 12px; color: #999; margin-left: 4px; }
