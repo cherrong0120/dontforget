@@ -770,13 +770,6 @@ body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden;
     </div>
   </div>
 </div>
-<div class="wechat-notification" id="wechatNotification">
-  <div class="wechat-notification-icon"><img src="icon_wechat.png"></div>
-  <div class="wechat-notification-content">
-    <div class="wechat-notification-title">微信 <span style="color:#999;font-weight:normal;">刚刚</span></div>
-    <div class="wechat-notification-msg" id="wechatNotifMsg">你在吗？</div>
-  </div>
-</div>
 
 <!-- 图片查看器 -->
 <div class="photo-viewer" id="photoViewer">
@@ -996,10 +989,10 @@ function playBootSound() {
   fanGain.gain.setValueAtTime(0, now);
   fanGain.gain.linearRampToValueAtTime(0.3 * globalVolume, now + 0.3);
   fanGain.gain.linearRampToValueAtTime(0.1 * globalVolume, now + 1.2);
-  fanGain.gain.linearRampToValueAtTime(0, now + 1.8);
+  fanGain.gain.linearRampToValueAtTime(0, now + 3.0);
   fan.connect(fanFilter).connect(fanGain).connect(audioCtx.destination);
   fan.start(now);
-  fan.stop(now + 1.8);
+  fan.stop(now + 3.0);
   setTimeout(() => {
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
@@ -1035,7 +1028,7 @@ if (isSecondPlaythrough) {
 }
 
 function startGame() { showStage('stage-black'); }
-function startBootSequence() { playBootSound(); showStage('stage-boot'); setTimeout(() => { showStage('stage-login'); }, 1800); }
+function startBootSequence() { playBootSound(); showStage('stage-boot'); setTimeout(() => { showStage('stage-login'); }, 3000); }
 document.getElementById('stage-login').addEventListener('click', () => { showStage('stage-desktop'); setTimeout(() => { document.getElementById('clickHint').style.display = 'block'; }, 1000);  });
 const icons = document.querySelectorAll('.desktop-icon');
 let selectedIcon = null;
@@ -4013,24 +4006,6 @@ function triggerChapter1End() {
   
   // 旁白已删除（未知.txt无提示文字，无需念名字的反应）
   
-  // 2. 微信新消息通知（旁白播放后）
-  setTimeout(() => {
-    showWechatNotification();
-  }, 7000);
-  
-}
-
-function showWechatNotification() {
-  const notif = document.getElementById('wechatNotification');
-  notif.classList.add('show');
-  
-  // 播放微信提示音
-  playWechatDing();
-  
-  // 5秒后自动消失
-  setTimeout(() => {
-    notif.classList.remove('show');
-  }, 5000);
 }
 
 function playWechatDing() {
