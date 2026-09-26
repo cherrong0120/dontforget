@@ -15,8 +15,14 @@ body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden;
 .icon-svg-md { width: 28px; height: 28px; display: block; }
 .stage { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; }
 .stage.hidden { display: none; }
-#stage-black { background: #000; z-index: 100; }
-#stage-black .boot-text { color: #555; font-size: 14px; position: absolute; bottom: 40px; letter-spacing: 2px; }
+#stage-black { background: #000; z-index: 100; flex-direction: column; justify-content: center; align-items: center; padding: 40px; }
+#stage-black .game-title { color: #fff; font-size: 42px; font-weight: 300; letter-spacing: 12px; margin-bottom: 40px; text-shadow: 0 0 20px rgba(255,255,255,0.3); }
+#stage-black .game-intro { color: #aaa; font-size: 14px; line-height: 2.2; text-align: center; max-width: 500px; margin-bottom: 40px; }
+#stage-black .game-intro p { margin: 4px 0; }
+#stage-black .game-intro .intro-quote { color: #fff; font-size: 16px; margin: 12px 0; }
+#stage-black .game-intro .intro-end { color: #888; font-size: 13px; margin-top: 16px; font-style: italic; }
+#stage-black .game-start-btn { background: transparent; color: #ccc; border: 1px solid #555; padding: 12px 40px; font-size: 15px; letter-spacing: 4px; cursor: pointer; transition: all 0.3s; font-family: inherit; }
+#stage-black .game-start-btn:hover { background: rgba(255,255,255,0.1); border-color: #888; color: #fff; }
 #stage-boot { background: #0078d7; z-index: 90; flex-direction: column; }
 #stage-boot .boot-logo { width: 80px; height: 80px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 6px; margin-bottom: 40px; }
 #stage-boot .boot-logo div { background: #fff; border-radius: 2px; }
@@ -76,7 +82,7 @@ body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden;
 .window-statusbar { height: 22px; background: #f5f5f5; border-top: 1px solid #ddd; display: flex; align-items: center; padding: 0 8px; font-size: 11px; color: #666; }
 .narration { position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.75); color: #fff; padding: 12px 24px; border-radius: 4px; font-size: 15px; max-width: 600px; text-align: center; z-index: 9999; display: none; line-height: 1.6; opacity: 0; transition: opacity 0.5s ease; }
 .narration.show { display: block; opacity: 1; }
-.click-hint { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.5); font-size: 13px; z-index: 200; animation: pulse 2s ease-in-out infinite; pointer-events: none; }
+.click-hint { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.5); font-size: 13px; z-index: 50; animation: pulse 2s ease-in-out infinite; pointer-events: none; }
 .volume-panel {
   position: fixed;
   bottom: 48px;
@@ -553,7 +559,19 @@ body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden;
 <symbol id="icon-wifi" viewBox="0 0 16 16"><path d="M1 5 Q8 0 15 5" stroke="#fff" stroke-width="1.5" fill="none"/><path d="M3 8 Q8 4 13 8" stroke="#fff" stroke-width="1.5" fill="none"/><circle cx="8" cy="12" r="1.5" fill="#fff"/></symbol>
 <symbol id="icon-battery" viewBox="0 0 16 16"><rect x="1" y="4" width="12" height="8" rx="1" fill="none" stroke="#fff" stroke-width="1"/><rect x="2.5" y="5.5" width="8" height="5" fill="#fff"/><rect x="13" y="6" width="2" height="4" rx="0.5" fill="#fff"/></symbol>
 </defs></svg>
-<div id="stage-black" class="stage"><div class="boot-text">点击任意位置开机</div></div>
+<div id="stage-black" class="stage">
+  <div class="game-title">念 念 不 忘</div>
+  <div class="game-intro">
+    <p>凌晨三点四十七分，我的电脑自己亮了。</p>
+    <p>桌面上多了一个我从没建过的文件，里面只有一句话 ——</p>
+    <p class="intro-quote">"你回来了。"</p>
+    <p>是谁？</p>
+    <p>为什么监控里的那些事，我完全不记得？</p>
+    <p>到底是谁？</p>
+    <p class="intro-end">—— 这台电脑里，好像有什么东西，一直在等我。</p>
+  </div>
+  <button class="game-start-btn" onclick="startBootSequence()">我准备好了</button>
+</div>
 <div id="stage-boot" class="stage hidden"><div class="boot-logo"><div></div><div></div><div></div><div></div></div><div class="boot-spinner"></div></div>
 <div id="stage-login" class="stage hidden"><div class="login-avatar"><svg><use href="#icon-user"/></svg></div><div class="login-name">许念</div><div id="secondPlayHint" style="display:none;color:rgba(255,200,200,0.8);font-size:13px;margin-bottom:10px;font-style:italic;">她还在等你。</div><div class="login-hint">点击任意位置登录</div><div class="login-time"><div class="time">03:47</div><div class="date">2018年7月16日 星期一</div></div></div>
 <div id="stage-desktop" class="stage hidden">
@@ -1008,7 +1026,8 @@ if (isSecondPlaythrough) {
   }, 100);
 }
 
-function startGame() { showStage('stage-black'); playBootSound(); setTimeout(() => { showStage('stage-boot'); }, 1800); setTimeout(() => { showStage('stage-login'); }, 3500); }
+function startGame() { showStage('stage-black'); }
+function startBootSequence() { playBootSound(); showStage('stage-boot'); setTimeout(() => { showStage('stage-login'); }, 1800); }
 document.getElementById('stage-login').addEventListener('click', () => { showStage('stage-desktop'); setTimeout(() => { document.getElementById('clickHint').style.display = 'block'; }, 1000);  });
 const icons = document.querySelectorAll('.desktop-icon');
 let selectedIcon = null;
@@ -1142,7 +1161,7 @@ const fileSystem = {
             '礼物.zip': { type: 'zip', encrypted: true }
           }},
           '图片': { type: 'folder', children: {}, locked: true },
-          '音乐': { type: 'folder', children: {} },
+          '音乐': { type: 'folder', children: {}, locked: true },
           '视频': { type: 'folder', children: {}, locked: true }
         }}
       }}
