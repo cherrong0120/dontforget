@@ -989,10 +989,10 @@ function playBootSound() {
   fanGain.gain.setValueAtTime(0, now);
   fanGain.gain.linearRampToValueAtTime(0.3 * globalVolume, now + 0.3);
   fanGain.gain.linearRampToValueAtTime(0.1 * globalVolume, now + 1.2);
-  fanGain.gain.linearRampToValueAtTime(0, now + 3.0);
+  fanGain.gain.linearRampToValueAtTime(0, now + 2.0);
   fan.connect(fanFilter).connect(fanGain).connect(audioCtx.destination);
   fan.start(now);
-  fan.stop(now + 3.0);
+  fan.stop(now + 2.0);
   setTimeout(() => {
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
@@ -1028,7 +1028,7 @@ if (isSecondPlaythrough) {
 }
 
 function startGame() { showStage('stage-black'); }
-function startBootSequence() { playBootSound(); showStage('stage-boot'); setTimeout(() => { showStage('stage-login'); }, 3000); }
+function startBootSequence() { playBootSound(); showStage('stage-boot'); setTimeout(() => { showStage('stage-login'); }, 2000); }
 document.getElementById('stage-login').addEventListener('click', () => { showStage('stage-desktop'); setTimeout(() => { document.getElementById('clickHint').style.display = 'block'; }, 1000);  });
 const icons = document.querySelectorAll('.desktop-icon');
 let selectedIcon = null;
