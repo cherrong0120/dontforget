@@ -286,7 +286,7 @@ body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden;
 .wechat-tray-popup-item { padding: 6px 16px; cursor: pointer; border-radius: 4px; }
 .wechat-tray-popup-item:hover { background: #f5f5f5; }
 .monitor-window { min-width: 800px; min-height: 550px; }
-.monitor-body { display: flex; height: calc(100% - 32px); }
+.monitor-body { display: flex; height: calc(100% - 32px); overflow: hidden; }
 .monitor-timeline { width: 180px; background: #1a1a1a; border-right: 1px solid #333; display: flex; flex-direction: column; }
 .monitor-timeline-header { padding: 12px; color: #0f0; font-size: 12px; font-family: monospace; border-bottom: 1px solid #333; }
 .monitor-timeline-list { flex: 1; overflow-y: auto; padding: 8px; }
@@ -295,8 +295,8 @@ body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden;
 .monitor-date-item.active { background: #0a3d0a; color: #0f0; }
 .monitor-date-item.locked { color: #666; }
 .monitor-date-item .lock-icon { font-size: 14px; }
-.monitor-main { flex: 1; display: flex; flex-direction: column; background: #000; }
-.monitor-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; padding: 2px; background: #000; }
+.monitor-main { flex: 1; display: flex; flex-direction: column; background: #000; min-height: 0; overflow: hidden; }
+.monitor-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; padding: 2px; background: #000; min-height: 0; }
 .monitor-cam { cursor: pointer; }
 .monitor-cam:hover { outline: 2px solid #0f0; }
 .monitor-single { flex: 1; display: none; flex-direction: column; background: #000; position: relative; min-height: 0; overflow: hidden; }
@@ -342,6 +342,10 @@ body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden;
 @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
 .monitor-noise { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 3px); pointer-events: none; z-index: 1; }
 .monitor-black { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; color: #333; font-size: 12px; font-family: monospace; }
+.zip-photo-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; border: none; background: rgba(0,0,0,0.5); color: #fff; font-size: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.2s; line-height: 1; }
+.zip-photo-nav:hover { background: rgba(0,0,0,0.8); }
+.zip-photo-prev { left: 12px; }
+.zip-photo-next { right: 12px; }
 .monitor-controls { height: 50px; background: #1a1a1a; border-top: 1px solid #333; display: flex; align-items: center; padding: 0 16px; gap: 12px; }
 .monitor-play-btn { width: 36px; height: 36px; border-radius: 50%; background: #0f0; color: #000; border: none; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
 .monitor-play-btn:hover { background: #0c0; }
@@ -808,8 +812,10 @@ body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; overflow: hidden;
 <div class="window" id="zipPhotoViewer" style="left:15%;top:8%;width:70%;height:85%;z-index:160;">
 <div class="window-titlebar"><div class="window-title" id="zipPhotoTitle">照片查看器</div><div class="window-controls"><div class="window-btn close" onclick="closeZipPhoto()">✕</div></div></div>
 <div style="height:calc(100% - 30px);background:#1a1a1a;display:flex;flex-direction:column;">
-<div style="flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:10px;">
+<div style="flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:10px;position:relative;">
+<button class="zip-photo-nav zip-photo-prev" onclick="prevZipPhoto()">&#8249;</button>
 <img id="zipPhotoImg" style="max-width:100%;max-height:100%;object-fit:contain;">
+<button class="zip-photo-nav zip-photo-next" onclick="nextZipPhoto()">&#8250;</button>
 </div>
 <div id="zipPhotoDesc" style="padding:10px;background:#2a2a2a;color:#ccc;font-size:13px;text-align:center;"></div>
 </div>
@@ -1469,6 +1475,8 @@ const zipContent = {
 };
 
 let zipCurrentPath = ['root'];
+let zipPhotoList = [];
+let zipPhotoIndex = 0;
 
 // 追踪玩家查看过的礼物zip内容
 const viewedZipItems = {};
@@ -1609,6 +1617,37 @@ function showZipPhoto(name, photoFile, desc) {
   document.getElementById('zipPhotoImg').src = photoFile;
   viewer.classList.add('open');
   bringToFront('zipPhotoViewer');
+  // 收集当前文件夹中的所有图片
+  let current = zipContent;
+  for (const p of zipCurrentPath) {
+    current = current[p] || current.children?.[p] || current;
+  }
+  zipPhotoList = [];
+  for (const [n, item] of Object.entries(current.children || {})) {
+    if (item.type === 'photo' && item.photoFile) {
+      zipPhotoList.push({ name: n, photoFile: item.photoFile, desc: item.desc });
+    }
+  }
+  zipPhotoIndex = zipPhotoList.findIndex(p => p.name === name);
+  if (zipPhotoIndex < 0) zipPhotoIndex = 0;
+}
+
+function prevZipPhoto() {
+  if (zipPhotoList.length === 0) return;
+  zipPhotoIndex = (zipPhotoIndex - 1 + zipPhotoList.length) % zipPhotoList.length;
+  const p = zipPhotoList[zipPhotoIndex];
+  document.getElementById('zipPhotoTitle').textContent = p.name;
+  document.getElementById('zipPhotoDesc').textContent = p.desc;
+  document.getElementById('zipPhotoImg').src = p.photoFile;
+}
+
+function nextZipPhoto() {
+  if (zipPhotoList.length === 0) return;
+  zipPhotoIndex = (zipPhotoIndex + 1) % zipPhotoList.length;
+  const p = zipPhotoList[zipPhotoIndex];
+  document.getElementById('zipPhotoTitle').textContent = p.name;
+  document.getElementById('zipPhotoDesc').textContent = p.desc;
+  document.getElementById('zipPhotoImg').src = p.photoFile;
 }
 
 function closeZipPhoto() {
