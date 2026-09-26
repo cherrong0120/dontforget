@@ -1239,8 +1239,8 @@ function renderExplorer() {
             results.push([name, item]);
           }
         }
-        // 递归搜索子文件夹（包括locked文件夹，因为生日.jpg在locked的照片文件夹里）
-        if (item.type === 'folder' && item.children) {
+        // 递归搜索子文件夹和磁盘（包括locked文件夹，因为生日.jpg在locked的照片文件夹里）
+        if ((item.type === 'folder' || item.type === 'drive') && item.children) {
           results = results.concat(recursiveSearch(item.children, fullPath));
         }
       }
