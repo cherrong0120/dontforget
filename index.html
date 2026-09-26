@@ -3722,7 +3722,7 @@ function showMonitorLive() {
       <div class="monitor-black">信号正常 - 无光照</div>
       <div class="monitor-noise"></div>
     `;
-    cam.onclick = () => openSingleCam(i);
+    cam.onclick = null;
   }
 }
 
@@ -3789,21 +3789,19 @@ function openSingleCam(camNum) {
   document.getElementById('monitorGrid').style.display = 'none';
   document.getElementById('monitorSingle').classList.add('active');
   
-  // 如果video元素不存在（可能被加密页面替换掉了），先重建标准结构
-  let video = document.getElementById('monitorSingleVideo');
-  if (!video) {
-    const single = document.getElementById('monitorSingle');
-    single.innerHTML = 
-      '<div class="monitor-single-back" onclick="closeSingleCam()">← 返回4宫格</div>' +
-      '<div class="monitor-single-info" id="monitorSingleInfo"></div>' +
-      '<video id="monitorSingleVideo" loop playsinline></video>' +
-      '<div class="monitor-noise"></div>';
-    video = document.getElementById('monitorSingleVideo');
-  }
+  // 始终重建标准结构，避免复加密视频的元素（loop=false、事件监听器等）
+  const single = document.getElementById('monitorSingle');
+  single.innerHTML = 
+    '<div class="monitor-single-back" onclick="closeSingleCam()">← 返回4宫格</div>' +
+    '<div class="monitor-single-info" id="monitorSingleInfo"></div>' +
+    '<video id="monitorSingleVideo" loop playsinline></video>' +
+    '<div class="monitor-noise"></div>';
+  const video = document.getElementById('monitorSingleVideo');
   
   document.getElementById('monitorSingleInfo').textContent = 'CAM 0' + camNum + ' ' + camNames[camNum-1];
   video.src = videos[camNum].src;
   video.muted = false;
+  video.loop = true;
   video.volume = globalVolume * 0.7;
   video.load();
   
